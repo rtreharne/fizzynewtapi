@@ -4,6 +4,6 @@ from institute.models import Institute
 class InstituteSerializer(ModelSerializer):
     class Meta:
         model = Institute
-        fields = ('name',)
+        fields = ('fnid', 'name',)
 
-        #read_only_fields = ['fnid']
+        read_only_fields = ['fnid']
