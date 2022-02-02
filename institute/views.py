@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from institute.serializers import InstituteSerializer
 from rest_framework.permissions import IsAuthenticated
 from institute.models import Institute
@@ -18,6 +18,14 @@ class CreateInstituteAPIView(CreateAPIView):
 class InstituteListAPIView(ListAPIView):
     serializer_class=InstituteSerializer
     permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Institute.objects.all()
+
+class InstituteDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = InstituteSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "fnid"
 
     def get_queryset(self):
         return Institute.objects.all()
