@@ -28,6 +28,6 @@ class InstituteDetailAPIView(RetrieveUpdateDestroyAPIView):
     lookup_field = "fnid"
 
     def get_queryset(self):
-        return Institute.objects.all()
+        return Institute.objects.get()
 
 
