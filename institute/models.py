@@ -13,7 +13,7 @@ class Institute(TrackingModel):
 
 class InstituteDomain(TrackingModel):
     fnid = models.UUIDField(unique=True, primary_key=True, default=uuid.uuid4, editable=False)
-    institute_fnid = models.CharField(max_length=128, default="7d22433f-8e41-416f-be47-8d28f81b5195")
+    institute_fnid = models.CharField(max_length=128)
     domain = models.CharField(max_length=128, validators=[URLValidator])
     primary = models.BooleanField(default=False)
 

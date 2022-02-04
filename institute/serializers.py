@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from institute.models import Institute, InstituteDomain
+from rest_framework import serializers
 
 class InstituteSerializer(ModelSerializer):
     class Meta:
@@ -8,7 +9,7 @@ class InstituteSerializer(ModelSerializer):
 
         read_only_fields = ['fnid']
 
-class InstituteEmailSerializer(ModelSerializer):
+class InstituteDomainSerializer(ModelSerializer):
     class Meta:
         model = InstituteDomain
         fields = ('institute_fnid', 'domain', 'primary')
