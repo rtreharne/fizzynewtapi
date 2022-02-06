@@ -20,5 +20,9 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('api/auth/', include("authentication.urls")),
-    path('api/institute/', include("institute.urls"))
+    path('api/institute/', include("institute.urls")),
+    path('api/school/', include("school.urls")),
+    path('api/programme/', include("programme.urls")),
+    path('api/course/', include("course.urls")),
+    path('api/student/', include("student.urls"))
 ]

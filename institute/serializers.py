@@ -5,7 +5,6 @@ from institute.models import Institute
 
 class InstituteSerializer(ModelSerializer):
 
-
     class Meta:
         model = Institute
         fields = ('fnid', 'name',)
@@ -16,7 +15,6 @@ class InstituteDomainSerializer(ModelSerializer):
 
 
     def validate(self, data):
-        print("validating data")
         institute_fnid = data["institute_fnid"]
         # Raise error if institute doesn't exist
         try:
@@ -29,6 +27,8 @@ class InstituteDomainSerializer(ModelSerializer):
 
     class Meta:
         model = InstituteDomain
-        fields = ('institute_fnid', 'domain', 'primary')
+        fields = ('fnid', 'institute_fnid', 'domain', 'primary')
+
+        read_only_fields = ['fnid']
 
 

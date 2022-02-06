@@ -9,23 +9,24 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 
-class CreateInstituteAPIView(CreateAPIView):
+class ListCreateInstituteAPIView(ListCreateAPIView):
     serializer_class = InstituteSerializer
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         return serializer.save()
 
+    def get_queryset(self):
+        return Institute.objects.all()
 
-class CreateInstituteDomainListAPIView(CreateAPIView):
+
+class ListCreateInstituteDomainAPIView(ListCreateAPIView):
     serializer_class = InstituteDomainSerializer
     queryset = InstituteDomain.objects.all()
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         serializer.is_valid()
-        print(serializer.validated_data)
-        print("primary =", serializer.validated_data["primary"])
 
         # Set primary field to False for all existing institute domains if new domain is primary
         existing_domains = InstituteDomain.objects.filter(institute_fnid=serializer.validated_data["institute_fnid"])
@@ -39,21 +40,19 @@ class CreateInstituteDomainListAPIView(CreateAPIView):
 
         return serializer.save()
 
+    def get_queryset(self):
+        return InstituteDomain.objects.all()
 
-class InstituteDomainListAPIView(ListAPIView):
-    serializer_class=InstituteDomainSerializer
+
+class InstituteDomainDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = InstituteDomainSerializer
     permission_classes = (IsAuthenticated,)
+    lookup_field = "fnid"
 
     def get_queryset(self):
         return InstituteDomain.objects.all()
 
 
-class InstituteListAPIView(ListAPIView):
-    serializer_class=InstituteSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        return Institute.objects.all()
 
 class InstituteDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = InstituteSerializer
