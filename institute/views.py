@@ -30,7 +30,7 @@ class ListCreateInstituteDomainAPIView(ListCreateAPIView):
 
         # Set primary field to False for all existing institute domains if new domain is primary
         existing_domains = InstituteDomain.objects.filter(institute_fnid=serializer.validated_data["institute_fnid"])
-        if serializer.validated_data["primary"]:
+        if serializer.validated_data.get("primary", False):
 
             if len(existing_domains) > 0:
                 existing_domains.update(primary=False)
