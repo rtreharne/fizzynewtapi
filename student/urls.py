@@ -5,6 +5,7 @@ urlpatterns = [
 
     path('', ListCreateStudentAPIView.as_view(), name='list-create-student'),
     path('email', ListCreateStudentEmailAPIView.as_view(), name='list-create-student-email'),
+    path('email/<str:fnid>', StudentEmailDetailAPIView.as_view(), name="student-email"),
     path('<str:fnid>', StudentDetailAPIView.as_view(), name="student"),
     path('email/<str:fnid>', StudentEmailDetailAPIView.as_view(), name="student-email"),
 
