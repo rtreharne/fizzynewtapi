@@ -1,5 +1,5 @@
 from django.db import models
-from helpers.models import TrackingModel
+from helpers.models import TrackingModel, BaseModel
 import uuid
 from django.core.validators import URLValidator
 
@@ -22,3 +22,11 @@ class InstituteDomain(TrackingModel):
 
     def __str__(self):
         self.domain
+
+
+class InstituteConfig(BaseModel):
+    institute_fnid = models.CharField(max_length=128, unique=True)
+    student_id_required = models.BooleanField(default=False)
+
+    def __str__(self):
+        self.institute_fnid

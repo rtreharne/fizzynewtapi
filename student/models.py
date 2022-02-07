@@ -19,7 +19,6 @@ class Student(BaseModel):
     student_id = models.CharField(max_length=12, unique=True, null=True, blank=True, default=None)
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
-    email = models.EmailField(max_length=128, unique=True)
     international = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
 
@@ -29,4 +28,13 @@ class Student(BaseModel):
 
     def __str__(self):
         return self.name
+
+class StudentEmail(BaseModel):
+    institute_fnid = models.CharField(max_length=128)
+    student_fnid = models.CharField(max_length=128)
+    email = models.EmailField(max_length=128, unique=True)
+    primary = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.email
 

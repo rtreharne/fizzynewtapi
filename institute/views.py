@@ -2,9 +2,9 @@ from django.shortcuts import render
 from rest_framework.generics import GenericAPIView, ListCreateAPIView, CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from institute.serializers import InstituteSerializer, InstituteDomainSerializer
+from institute.serializers import InstituteSerializer, InstituteDomainSerializer, InstituteConfigSerializer
 from rest_framework.permissions import IsAuthenticated
-from institute.models import Institute, InstituteDomain
+from institute.models import Institute, InstituteDomain, InstituteConfig
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -63,3 +63,23 @@ class InstituteDetailAPIView(RetrieveUpdateDestroyAPIView):
 
         return Institute.objects.all()
 
+
+class ListCreateInstituteConfigAPIView(ListCreateAPIView):
+    serializer_class = InstituteConfigSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def get_queryset(self):
+        return Institute.objects.all()
+
+
+class InstituteConfigDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = InstituteConfigSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "fnid"
+
+    def get_queryset(self):
+
+        return Institute.objects.all()

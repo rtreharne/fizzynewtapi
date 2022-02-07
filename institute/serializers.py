@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer
-from institute.models import Institute, InstituteDomain
+from institute.models import Institute, InstituteDomain, InstituteConfig
 from rest_framework import serializers
-from institute.models import Institute
 
 class InstituteSerializer(ModelSerializer):
 
@@ -32,3 +31,10 @@ class InstituteDomainSerializer(ModelSerializer):
         read_only_fields = ['fnid']
 
 
+class InstituteConfigSerializer(ModelSerializer):
+
+    class Meta:
+        model = InstituteConfig
+        fields = ('fnid', 'institute_fnid', 'student_id_required')
+
+        read_only_fields = ['fnid']
