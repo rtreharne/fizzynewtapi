@@ -4,7 +4,7 @@ from helpers.models import BaseModel
 
 class Course(BaseModel):
 
-    institute_fnid = models.CharField(max_length=128)
+    institute_fnid = models.CharField(max_length=128, editable=False)
     code = models.CharField(max_length=9, help_text="(e.g. MATH101)")
     name = models.CharField(max_length=128)
     visible = models.BooleanField(default=True)
