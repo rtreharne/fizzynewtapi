@@ -16,3 +16,17 @@ class Course(BaseModel):
     def __str__(self):
         return self.name
 
+
+class CourseStudent(BaseModel):
+
+    course_fnid = models.CharField(max_length=128)
+    student_fnid = models.CharField(max_length=128)
+
+    class Meta:
+        unique_together = ('course_fnid', 'student_fnid')
+
+    def __str__(self):
+        return self.student_fnid
+
+
+
