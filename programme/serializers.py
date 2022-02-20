@@ -16,9 +16,9 @@ class ProgrammeSerializer(ModelSerializer):
             raise serializers.ValidationError("The institute does not exist.")
 
         try:
-            School.objects.get(fnid=school_fnid)
+            School.objects.get(fnid=school_fnid, institute_fnid=institute_fnid)
         except:
-            raise serializers.ValidationError("The school does not exist.")
+            raise serializers.ValidationError("The school for this programme does not exist at this institute.")
 
         return data
 

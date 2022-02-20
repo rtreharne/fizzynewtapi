@@ -1,7 +1,19 @@
 from rest_framework.serializers import ModelSerializer
 from course.models import Course, CourseStudent
+from institute.models import Institute
+from rest_framework import serializers
 
 class CourseSerializer(ModelSerializer):
+    def validate(self, data):
+        institute_fnid = data["institute_fnid"]
+
+        # Raise error if institute doesn't exist
+        try:
+            Institute.objects.get(fnid=institute_fnid)
+        except:
+            raise serializers.ValidationError("The institute does not exist.")
+
+        return data
 
     class Meta:
         model = Course

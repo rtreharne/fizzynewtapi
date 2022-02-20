@@ -8,8 +8,6 @@ class StudentSerializer(ModelSerializer):
 
     def validate(self, data):
         institute_fnid = data["institute_fnid"]
-        email = data["email"]
-        domain = email.split("@")[1]
 
         # Raise error if institute doesn't exist
         try:

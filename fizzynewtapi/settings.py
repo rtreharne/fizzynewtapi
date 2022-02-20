@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'authentication',
+    'django_filters',
     'institute',
     'school',
     'programme',
