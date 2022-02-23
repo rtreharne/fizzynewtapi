@@ -5,10 +5,12 @@ from rest_framework import serializers
 
 class CourseSerializer(ModelSerializer):
     def validate(self, data):
-        institute_fnid = data["institute_fnid"]
+        print(data)
+
 
         # Raise error if institute doesn't exist
         try:
+            institute_fnid = data["institute_fnid"]
             Institute.objects.get(fnid=institute_fnid)
         except:
             raise serializers.ValidationError("The institute does not exist.")
@@ -24,5 +26,5 @@ class CourseStudentSerializer(ModelSerializer):
 
     class Meta:
         model = CourseStudent
-        fields = ('fnid', 'course_fnid', 'student_fnid')
+        fields = ('fnid', 'institute_fnid', 'course_fnid', 'student_fnid')
         read_only_fields = ['fnid']

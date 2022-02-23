@@ -3,7 +3,6 @@ from student.serializers import StudentSerializer, StudentEmailSerializer
 from rest_framework.permissions import IsAuthenticated
 from student.models import Student, StudentEmail
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.response import Response
 from rest_framework import exceptions
 
 
@@ -33,6 +32,7 @@ class ListCreateStudentAPIView(ListCreateAPIView):
 class StudentDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = StudentSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = [DjangoFilterBackend]
     lookup_field = "fnid"
 
     filterset_fields = ["institute_fnid"]

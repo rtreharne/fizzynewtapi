@@ -7,15 +7,15 @@ from rest_framework import serializers
 class ProgrammeSerializer(ModelSerializer):
 
     def validate(self, data):
-        institute_fnid = data["institute_fnid"]
-        school_fnid = data["school_fnid"]
 
         try:
+            institute_fnid = data["institute_fnid"]
             Institute.objects.get(fnid=institute_fnid)
         except:
             raise serializers.ValidationError("The institute does not exist.")
 
         try:
+            school_fnid = data["school_fnid"]
             School.objects.get(fnid=school_fnid, institute_fnid=institute_fnid)
         except:
             raise serializers.ValidationError("The school for this programme does not exist at this institute.")
