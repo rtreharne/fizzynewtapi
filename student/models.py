@@ -27,7 +27,7 @@ class Student(BaseModel):
         unique_together = ('institute_fnid', 'student_id',)
 
     def __str__(self):
-        return self.name
+        return self.last_name
 
 class StudentEmail(BaseModel):
     institute_fnid = models.CharField(max_length=128)

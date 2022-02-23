@@ -12,7 +12,7 @@ class ListCreateStudentAPIView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     filter_backends = [DjangoFilterBackend]
 
-    filterset_fields = ["institute_fnid"]
+    filterset_fields = ["fnid", "institute_fnid", "last_name", "first_name", "school_fnid"]
 
 
 
@@ -24,10 +24,10 @@ class ListCreateStudentAPIView(ListCreateAPIView):
         queryset = Student.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
-            queryset = queryset.filter(institute_fnid=institute_fnid)
+            return queryset
         else:
             raise exceptions.ParseError("institute_id not supplied in query string.")
-        return queryset
+
 
 
 class StudentDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -35,13 +35,24 @@ class StudentDetailAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     lookup_field = "fnid"
 
+    filterset_fields = ["institute_fnid"]
+
     def get_queryset(self):
 
-        return Student.objects.all()
+        queryset = Student.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            queryset = queryset.filter(institute_fnid=institute_fnid)
+        else:
+            raise exceptions.ParseError("institute_id not supplied in query string.")
+        return queryset
 
 class ListCreateStudentEmailAPIView(ListCreateAPIView):
     serializer_class = StudentEmailSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = [DjangoFilterBackend]
+
+    filterset_fields = ["fnid", "institute_fnid", "student_fnid", "primary", "email"]
 
     def perform_create(self, serializer):
         serializer.is_valid()
@@ -59,13 +70,28 @@ class ListCreateStudentEmailAPIView(ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        return StudentEmail.objects.all()
+        queryset = StudentEmail.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            return queryset
+        else:
+            raise exceptions.ParseError("institute_id not supplied in query string.")
+
 
 class StudentEmailDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = StudentEmailSerializer
     permission_classes = (IsAuthenticated,)
     lookup_field = "fnid"
 
+    filter_backends = [DjangoFilterBackend]
+
+    filterset_fields = ["institute_fnid"]
+
     def get_queryset(self):
 
-        return StudentEmail.objects.all()
+        queryset = StudentEmail.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            return queryset
+        else:
+            raise exceptions.ParseError("institute_id not supplied in query string.")
