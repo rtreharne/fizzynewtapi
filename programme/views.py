@@ -22,7 +22,7 @@ class ListCreateProgrammeAPIView(ListCreateAPIView):
         if institute_fnid:
             return queryset
         else:
-            raise exceptions.ParseError("institute_id not supplied in query string.")
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
 
 
 class ProgrammeDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -41,6 +41,6 @@ class ProgrammeDetailAPIView(RetrieveUpdateDestroyAPIView):
         if institute_fnid:
             queryset = queryset.filter(institute_fnid=institute_fnid)
         else:
-            raise exceptions.ParseError("institute_id not supplied in query string.")
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
         return queryset
 

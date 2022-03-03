@@ -75,7 +75,7 @@ class ListCreateStudentEmailAPIView(ListCreateAPIView):
         if institute_fnid:
             return queryset
         else:
-            raise exceptions.ParseError("institute_id not supplied in query string.")
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
 
 
 class StudentEmailDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -94,4 +94,4 @@ class StudentEmailDetailAPIView(RetrieveUpdateDestroyAPIView):
         if institute_fnid:
             return queryset
         else:
-            raise exceptions.ParseError("institute_id not supplied in query string.")
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
