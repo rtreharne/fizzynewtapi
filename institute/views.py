@@ -6,6 +6,7 @@ from institute.serializers import InstituteSerializer, InstituteDomainSerializer
 from rest_framework.permissions import IsAuthenticated
 from institute.models import Institute, InstituteDomain, InstituteConfig
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import exceptions
 
 
 
@@ -41,7 +42,12 @@ class ListCreateInstituteDomainAPIView(ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        return InstituteDomain.objects.all()
+        queryset = InstituteDomain.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            return queryset.filter(institute_fnid=institute_fnid)
+        else:
+            raise exceptions.ParseError("institute_id not supplied in query string.")
 
 
 class InstituteDomainDetailAPIView(RetrieveUpdateDestroyAPIView):

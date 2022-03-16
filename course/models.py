@@ -12,7 +12,6 @@ class Course(BaseModel):
     class Meta:
         unique_together = ('institute_fnid', 'code',)
 
-
     def __str__(self):
         return self.name
 
