@@ -1,5 +1,6 @@
 from django.db import models
 from helpers.models import BaseModel
+from django.core.validators import MaxLengthValidator, MinValueValidator
 
 
 class Course(BaseModel):
@@ -8,6 +9,7 @@ class Course(BaseModel):
     code = models.CharField(max_length=9, help_text="(e.g. MATH101)")
     name = models.CharField(max_length=128)
     visible = models.BooleanField(default=True)
+    threshold = models.IntegerField(default=10, validators=[MaxLengthValidator(100), MinValueValidator(1)])
 
     class Meta:
         unique_together = ('institute_fnid', 'code',)

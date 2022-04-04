@@ -1,4 +1,7 @@
 from django.contrib import admin
+from institute.models import Institute
 
+class InstituteAdmin(admin.ModelAdmin):
+    list_display = ('fnid', 'name')
 
-# Register your models here.
+admin.site.register(Institute, InstituteAdmin)

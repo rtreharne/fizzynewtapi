@@ -9,7 +9,7 @@ from django.conf import settings
 import pytz
 from institute.models import Institute
 from datetime import timedelta
-from attendance_toolkit.toolkit import get_session_start, check_for_session
+from attendance_toolkit.toolkit import get_session_start, check_for_session, create_attendance_log_for_session
 
 
 class ListCreateCodeAPIView(ListCreateAPIView):
@@ -43,14 +43,11 @@ class ListCreateAttendanceAPIView(ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["start_time", "institute_fnid", "course_fnid", "student_fnid"]
 
-
-
     def perform_create(self, serializer):
 
         serializer.is_valid()
 
         session = check_for_session(serializer.validated_data, self.request.query_params)
-        print(session.__dict__)
 
         return serializer
 
@@ -58,7 +55,7 @@ class ListCreateAttendanceAPIView(ListCreateAPIView):
         queryset = Attendance.objects.all()
         return queryset
         institute_fnid = self.request.query_params.get("institute_fnid", None)
-        print("Hi Rob", institute_fnid)
+
         if institute_fnid:
             return Institute.objects.filter(institute_fnid=institute_fnid)
         else:

@@ -27,13 +27,14 @@ class Session(BaseModel):
     session_type_fnid = models.CharField(max_length=128)
     institute_fnid = models.CharField(max_length=128)
     course_fnid = models.CharField(max_length=128)
-    average_attendance = models.DecimalField(default=0.0, max_digits=3, decimal_places=1)
+    average_attendance = models.DecimalField(default=0.0, max_digits=4, decimal_places=1)
     session_code = models.CharField(max_length=128)
     session_start = models.DateTimeField()
     duration_hrs = models.DecimalField(default=1.0, max_digits=3, decimal_places=1)
     session_verification_required = models.BooleanField(default=False)
     peer_verification_required = models.BooleanField(default=False)
     late_hrs = models.DecimalField(default=12.0, max_digits=3, decimal_places=1)
+    confirmed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.session_code

@@ -1,4 +1,7 @@
-from attendance.views import ListCreateCodeAPIView, ListCreateSessionTypeAPIView, ListCreateAttendanceAPIView
+from attendance.views import ListCreateCodeAPIView, \
+    ListCreateSessionTypeAPIView, \
+    ListCreateAttendanceAPIView
+
 from django.urls import path
 from rest_framework import routers
 
