@@ -5,6 +5,7 @@ from rest_framework import response, status, permissions
 from django.contrib.auth import authenticate
 
 class AuthUserAPIView(GenericAPIView):
+    serializer_class = LoginSerializer
 
     permission_classes = (permissions.IsAuthenticated,)
 
