@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from course.models import Course, CourseStudent
+from course.models import Course, CourseStudent, CourseInstance
 from institute.models import Institute
 from rest_framework import serializers
 
@@ -26,5 +26,12 @@ class CourseStudentSerializer(ModelSerializer):
 
     class Meta:
         model = CourseStudent
-        fields = ('fnid', 'institute_fnid', 'course_fnid', 'student_fnid')
+        fields = ('fnid', 'institute_fnid', 'course_fnid', 'student_fnid', 'intake_fnid')
+        read_only_fields = ['fnid']
+
+class CourseInstanceSerializer(ModelSerializer):
+
+    class Meta:
+        model = CourseInstance
+        fields = ('fnid', 'institute_fnid', 'course_fnid', 'start', 'duration_weeks')
         read_only_fields = ['fnid']

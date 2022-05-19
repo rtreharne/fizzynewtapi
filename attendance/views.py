@@ -41,7 +41,7 @@ class ListCreateAttendanceAPIView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["start_time", "institute_fnid", "course_fnid", "student_fnid"]
+    filterset_fields = ["institute_fnid", "course_fnid", "student_fnid"]
 
     def perform_create(self, serializer):
 

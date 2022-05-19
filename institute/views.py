@@ -74,7 +74,7 @@ class ListCreateInstituteConfigAPIView(ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        return Institute.objects.all()
+        return InstituteConfig.objects.all()
 
 
 class InstituteConfigDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -84,4 +84,4 @@ class InstituteConfigDetailAPIView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
 
-        return Institute.objects.all()
+        return InstituteConfig.objects.all()

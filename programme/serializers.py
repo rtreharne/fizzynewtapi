@@ -24,5 +24,5 @@ class ProgrammeSerializer(ModelSerializer):
 
     class Meta:
         model = Programme
-        fields = ('fnid', 'institute_fnid', 'school_fnid', 'name')
+        fields = ('fnid', 'institute_fnid', 'school_fnid', 'name', 'term_start_week')
         read_only_fields = ['fnid']

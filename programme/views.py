@@ -2,6 +2,7 @@ from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpda
 from programme.serializers import ProgrammeSerializer
 from rest_framework.permissions import IsAuthenticated
 from programme.models import Programme
+from institute.models import Institute, InstituteConfig
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions
 
@@ -14,6 +15,13 @@ class ListCreateProgrammeAPIView(ListCreateAPIView):
 
 
     def perform_create(self, serializer):
+        term_start_week = serializer.validated_data.get("term_start_week", False)
+        if not term_start_week:
+            institute_fnid = self.request.query_params.get("institute_fnid", None)
+            if institute_fnid:
+                institute_config = InstituteConfig.objects.get(institute_fnid=institute_fnid)
+                serializer.save(term_start_week=institute_config.term_start_week)
+
         return serializer.save()
 
     def get_queryset(self):

@@ -35,6 +35,6 @@ class InstituteConfigSerializer(ModelSerializer):
 
     class Meta:
         model = InstituteConfig
-        fields = ('fnid', 'institute_fnid', 'student_id_required')
+        fields = ('fnid', 'institute_fnid', 'student_id_required', "term_start_week")
 
         read_only_fields = ['fnid']
