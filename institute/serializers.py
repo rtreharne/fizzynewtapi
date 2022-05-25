@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from institute.models import Institute, InstituteDomain, InstituteConfig
+from institute.models import Institute, InstituteDomain, InstituteConfig, Term, Year
 from rest_framework import serializers
 
 class InstituteSerializer(ModelSerializer):
@@ -36,5 +36,21 @@ class InstituteConfigSerializer(ModelSerializer):
     class Meta:
         model = InstituteConfig
         fields = ('fnid', 'institute_fnid', 'student_id_required', "term_start_week")
+
+        read_only_fields = ['fnid']
+
+class TermSerializer(ModelSerializer):
+
+    class Meta:
+        model = Term
+        fields = ('fnid', 'institute_fnid', 'label', 'start_date', 'end_date', 'registration_start')
+
+        read_only_fields = ['fnid']
+
+class YearSerializer(ModelSerializer):
+
+    class Meta:
+        model = Year
+        fields = ('fnid', 'institute_fnid', 'label',)
 
         read_only_fields = ['fnid']

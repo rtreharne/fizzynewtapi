@@ -2,11 +2,12 @@ from django.shortcuts import render
 from rest_framework.generics import GenericAPIView, ListCreateAPIView, CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from institute.serializers import InstituteSerializer, InstituteDomainSerializer, InstituteConfigSerializer
+from institute.serializers import InstituteSerializer, InstituteDomainSerializer, InstituteConfigSerializer, TermSerializer, YearSerializer
 from rest_framework.permissions import IsAuthenticated
-from institute.models import Institute, InstituteDomain, InstituteConfig
+from institute.models import Institute, InstituteDomain, InstituteConfig, Term, Year
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import exceptions
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 
@@ -85,3 +86,75 @@ class InstituteConfigDetailAPIView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
 
         return InstituteConfig.objects.all()
+
+class ListCreateTermAPIView(ListCreateAPIView):
+    serializer_class = TermSerializer
+    permission_classes = (IsAuthenticated,)
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["fnid", "institute_fnid", "label", "start_date", "end_date"]
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def get_queryset(self):
+        queryset = Term.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            return queryset
+        else:
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
+
+class TermDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = TermSerializer
+    permission_classes = (IsAuthenticated,)
+    filter_backends = [DjangoFilterBackend]
+    lookup_field = "fnid"
+
+    filterset_fields = ["institute_fnid"]
+
+    def get_queryset(self):
+
+        queryset = Term.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            queryset = queryset.filter(institute_fnid=institute_fnid)
+        else:
+            raise exceptions.ParseError("institute_id not supplied in query string.")
+        return queryset
+
+class ListCreateYearAPIView(ListCreateAPIView):
+    serializer_class = YearSerializer
+    permission_classes = (IsAuthenticated,)
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["fnid", "institute_fnid", "label"]
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def get_queryset(self):
+        queryset = Year.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            return queryset
+        else:
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
+
+class YearDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = YearSerializer
+    permission_classes = (IsAuthenticated,)
+    filter_backends = [DjangoFilterBackend]
+    lookup_field = "fnid"
+
+    filterset_fields = ["institute_fnid"]
+
+    def get_queryset(self):
+
+        queryset = Year.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            queryset = queryset.filter(institute_fnid=institute_fnid)
+        else:
+            raise exceptions.ParseError("institute_id not supplied in query string.")
+        return queryset

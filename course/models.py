@@ -39,9 +39,12 @@ class CourseInstance(BaseModel):
 
     institute_fnid = models.CharField(max_length=128)
     course_fnid = models.CharField(max_length=128)
+    term_fnid = models.CharField(max_length=128)
     threshold = models.IntegerField(default=10, validators=[MaxValueValidator(100), MinValueValidator(1)])
-    start = models.DateField(default=timezone.now)
-    duration_weeks = models.IntegerField(default=52, validators=[MinValueValidator(1)])
+    start_date_override = models.DateField(null=True, blank=True)
+    end_date_override = models.DateField(null=True, blank=True)
+    registration_start_override = models.DateField(null=True, blank=True)
+
     repeat = models.BooleanField(default=True)
     visible = models.BooleanField(default=True)
 

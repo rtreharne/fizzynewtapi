@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from student.models import Student, StudentEmail
+from student.models import Student, StudentEmail, StudentTerm
 from institute.models import Institute, InstituteDomain
 from rest_framework import serializers
 
@@ -56,4 +56,20 @@ class StudentEmailSerializer(ModelSerializer):
         model = StudentEmail
         fields = ('fnid', 'institute_fnid', 'student_fnid', 'email', 'primary')
 
+        read_only_fields = ['fnid']
+
+class StudentTermSerializer(ModelSerializer):
+
+    def validate(self, data):
+        institute_fnid = data["institute_fnid"]
+        try:
+            Institute.objects.get(fnid=institute_fnid)
+        except:
+            raise serializers.ValidationError("The institute does not exist.")
+
+        return data
+
+    class Meta:
+        model = StudentTerm
+        fields = ('fnid', 'institute_fnid', 'student_fnid', 'term_fnid', 'current')
         read_only_fields = ['fnid']

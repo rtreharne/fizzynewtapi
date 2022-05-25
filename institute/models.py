@@ -31,3 +31,28 @@ class InstituteConfig(BaseModel):
 
     def __str__(self):
         self.institute_fnid
+
+class Term(BaseModel):
+    institute_fnid = models.CharField(max_length=128)
+    label = models.CharField(max_length=128)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    registration_start = models.DateField()
+
+    class Meta:
+        unique_together = ('institute_fnid', 'label',)
+
+    def __str__(self):
+        return self.label
+
+class Year(BaseModel):
+    institute_fnid = models.CharField(max_length=128)
+    label = models.CharField(max_length=128)
+    previous_year_fnid = models.CharField(max_length=128, null=True, blank=True)
+    next_year_fnid = models.CharField(max_length=128, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('institute_fnid', 'label',)
+
+    def __str__(self):
+        return self.label

@@ -4,7 +4,8 @@ from helpers.models import BaseModel
 
 class Student(BaseModel):
 
-    study_year = ((1, '1'),
+    study_year = ((0, '0'),
+                  (1, '1'),
                   (2, '2'),
                   (3, '3'),
                   (4, '4'),
@@ -19,6 +20,7 @@ class Student(BaseModel):
     student_id = models.CharField(max_length=12, unique=True, null=True, blank=True, default=None)
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
+    undergraduate = models.BooleanField(default=True)
     international = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
 
@@ -37,6 +39,14 @@ class StudentEmail(BaseModel):
 
     def __str__(self):
         return self.email
+
+class StudentTerm(BaseModel):
+    institute_fnid = models.CharField(max_length=128)
+    student_fnid = models.CharField(max_length=128)
+    term_fnid = models.CharField(max_length=128)
+    current = models.BooleanField(default=True)
+
+
 
 
 

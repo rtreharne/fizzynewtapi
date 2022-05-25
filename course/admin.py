@@ -10,7 +10,7 @@ class CourseAdmin(admin.ModelAdmin):
         return institute_obj
 
 class CourseInstanceAdmin(admin.ModelAdmin):
-    list_display = ('fnid', 'course', 'start', 'duration_weeks')
+    list_display = ('fnid', 'course', 'start_date_override', 'end_date_override')
 
     def course(self, obj):
         course_obj = Course.objects.get(fnid=obj.course_fnid)
