@@ -17,7 +17,7 @@ class Student(BaseModel):
     school_fnid = models.CharField(max_length=128, null=True, blank=True)
     programme_fnid = models.CharField(max_length=128, null=True, blank=True)
     year_of_study = models.IntegerField(choices=study_year, null=True, blank=True)
-    student_id = models.CharField(max_length=12, unique=True, null=True, blank=True, default=None)
+    student_id = models.CharField(max_length=12, null=True, blank=True, default=None)
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     undergraduate = models.BooleanField(default=True)
