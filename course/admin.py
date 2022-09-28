@@ -1,5 +1,5 @@
 from django.contrib import admin
-from course.models import Course, CourseInstance, CourseStudent
+from course.models import Course, CourseInstance, CourseInstanceStudent
 from institute.models import Institute
 
 class CourseAdmin(admin.ModelAdmin):
@@ -18,5 +18,5 @@ class CourseInstanceAdmin(admin.ModelAdmin):
 
 admin.site.register(Course, CourseAdmin)
 admin.site.register(CourseInstance, CourseInstanceAdmin)
-admin.site.register(CourseStudent)
+admin.site.register(CourseInstanceStudent)
 

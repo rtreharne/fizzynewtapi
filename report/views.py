@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from student.models import Student
-from course.models import Course, CourseStudent
+from course.models import Course, CourseInstanceStudent
 from institute.models import Institute
 from attendance.models import Session, Attendance
 import datetime
@@ -13,7 +13,7 @@ def get_student(student_fnid):
     return student
 
 def get_student_enrollments(student_fnid):
-    enrollments = CourseStudent.objects.filter(student_fnid=student_fnid)
+    enrollments = CourseInstanceStudent.objects.filter(student_fnid=student_fnid)
     courses = [Course.objects.get(fnid=x.course_fnid) for x in enrollments]
     detail = [{
 

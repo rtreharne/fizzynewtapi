@@ -22,15 +22,14 @@ class Course(BaseModel):
         return self.name
 
 
-class CourseStudent(BaseModel):
+class CourseInstanceStudent(BaseModel):
 
     institute_fnid = models.CharField(max_length=128)
-    course_fnid = models.CharField(max_length=128)
     student_fnid = models.CharField(max_length=128)
     course_instance_fnid = models.CharField(max_length=128, default="")
 
     class Meta:
-        unique_together = ('course_fnid', 'student_fnid')
+        unique_together = ('institute_fnid', 'course_instance_fnid', 'student_fnid')
 
     def __str__(self):
         return self.student_fnid
@@ -40,6 +39,7 @@ class CourseInstance(BaseModel):
     institute_fnid = models.CharField(max_length=128)
     course_fnid = models.CharField(max_length=128)
     term_fnid = models.CharField(max_length=128)
+    name_override = models.CharField(max_length=128, null=True, blank=True)
     threshold = models.IntegerField(default=10, validators=[MaxValueValidator(100), MinValueValidator(1)])
     start_date_override = models.DateField(null=True, blank=True)
     end_date_override = models.DateField(null=True, blank=True)
@@ -47,6 +47,9 @@ class CourseInstance(BaseModel):
 
     repeat = models.BooleanField(default=True)
     visible = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('term_fnid', 'name_override')
 
     def __str__(self):
         return self.course_fnid

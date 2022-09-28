@@ -1,6 +1,6 @@
 import datetime
 from attendance.models import Session, Attendance, Code
-from course.models import Course, CourseStudent
+from course.models import Course, CourseInstanceStudent
 from student.models import Student
 from django.conf import settings
 import pytz
@@ -125,7 +125,7 @@ def create_attendance_log_for_session(data, query, session):
 
     # get all students on course
     course_fnid = data["course_fnid"]
-    student_ids = [x.student_fnid for x in CourseStudent.objects.filter(course_fnid=course_fnid)]
+    student_ids = [x.student_fnid for x in CourseInstanceStudent.objects.filter(course_fnid=course_fnid)]
 
     # get random selection of codes. ALL UNIQUE!
     codes = get_random_codes(len(student_ids))
