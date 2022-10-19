@@ -41,7 +41,7 @@ class CourseInstance(BaseModel):
     institute_fnid = models.CharField(max_length=128)
     course_fnid = models.CharField(max_length=128)
     term_fnid = models.CharField(max_length=128)
-    name_override = models.CharField(max_length=128, default="New course")
+    name_override = models.CharField(max_length=128)
     threshold = models.IntegerField(default=10, validators=[MaxValueValidator(100), MinValueValidator(1)])
     start_date_override = models.DateField(null=True, blank=True)
     end_date_override = models.DateField(null=True, blank=True)
@@ -51,8 +51,8 @@ class CourseInstance(BaseModel):
     repeat = models.BooleanField(default=True)
     visible = models.BooleanField(default=True)
 
-    class Meta:
-        unique_together = ('term_fnid', 'name_override')
+    #class Meta:
+        #unique_together = ('term_fnid', 'name_override')
 
     def __str__(self):
         return self.course_fnid
