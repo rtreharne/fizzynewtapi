@@ -51,8 +51,8 @@ class CourseInstance(BaseModel):
     repeat = models.BooleanField(default=True)
     visible = models.BooleanField(default=True)
 
-    #class Meta:
-        #unique_together = ('term_fnid', 'name_override')
+    class Meta:
+        unique_together = ('term_fnid', 'name_override')
 
     def __str__(self):
         return self.course_fnid
