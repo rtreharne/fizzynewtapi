@@ -35,5 +35,5 @@ class CourseInstanceSerializer(ModelSerializer):
 
     class Meta:
         model = CourseInstance
-        fields = ('fnid', 'institute_fnid', 'course_fnid', 'term_fnid', 'start_date_override', 'end_date_override')
+        fields = ('fnid', 'institute_fnid', 'course_fnid', 'term_fnid', 'name_override', 'start_date_override', 'end_date_override')
         read_only_fields = ['fnid']
