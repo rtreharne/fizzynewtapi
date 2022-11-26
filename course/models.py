@@ -42,7 +42,7 @@ class CourseInstance(BaseModel):
     course_fnid = models.CharField(max_length=128)
     term_fnid = models.CharField(max_length=128)
     name_override = models.CharField(max_length=128)
-    threshold = models.IntegerField(default=10, validators=[MaxValueValidator(100), MinValueValidator(1)])
+    threshold_override = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(100), MinValueValidator(1)])
     start_date_override = models.DateField(null=True, blank=True)
     end_date_override = models.DateField(null=True, blank=True)
     registration_start_override = models.DateField(null=True, blank=True)

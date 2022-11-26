@@ -45,6 +45,7 @@ class Term(BaseModel):
     def __str__(self):
         return self.label
 
+
 class Year(BaseModel):
     institute_fnid = models.CharField(max_length=128)
     label = models.CharField(max_length=128)
@@ -56,3 +57,15 @@ class Year(BaseModel):
 
     def __str__(self):
         return self.label
+
+
+class SessionType(BaseModel):
+    institute_fnid = models.CharField(max_length=128)
+    label = models.CharField(max_length=128)
+
+    class Meta:
+        unique_together = ('institute_fnid', 'label')
+
+    def __str__(self):
+        return self.label
+

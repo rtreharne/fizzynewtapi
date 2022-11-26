@@ -1,16 +1,9 @@
-from attendance.views import ListCreateCodeAPIView, \
-    ListCreateSessionTypeAPIView, \
-    ListCreateAttendanceAPIView
+#from attendance.views import ListCreateCodeAPIView
 
 from django.urls import path
-from rest_framework import routers
-
-#router = routers.SimpleRouter(trailing_slash=False)
 
 urlpatterns = [
 
-    path('', ListCreateAttendanceAPIView.as_view(), name='create-attendance'),
-    path('code/', ListCreateCodeAPIView.as_view(), name='create-code'),
-    path('session/type/', ListCreateSessionTypeAPIView.as_view(), name='create-session-type')
+    #path('request', ListCreateSessionRequest.as_view(), name='create-session-request'),
 
 ]

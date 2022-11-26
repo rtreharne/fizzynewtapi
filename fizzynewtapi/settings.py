@@ -77,8 +77,7 @@ INSTALLED_APPS = [
     'programme',
     'course',
     'student',
-    'attendance',
-    'report',
+    #'attendance',
 ]
 
 SWAGGER_SETTINGS = {
