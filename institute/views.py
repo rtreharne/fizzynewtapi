@@ -170,7 +170,7 @@ class ListCreateSessionTypeAPIView(ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        queryset = Year.objects.all()
+        queryset = SessionType.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
             return queryset
@@ -187,7 +187,7 @@ class SessionTypeDetailAPIView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
 
-        queryset = Year.objects.all()
+        queryset = SessionType.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
             queryset = queryset.filter(institute_fnid=institute_fnid)

@@ -60,5 +60,3 @@ class SessionTypeSerializer(ModelSerializer):
     class Meta:
         model = SessionType
         fields = ('fnid', 'institute_fnid', 'label')
-
-        read_only_fields = ['fnid']
