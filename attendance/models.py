@@ -16,7 +16,7 @@ class Attendance(BaseModel):
     late = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.fnid
+        return str(self.fnid)
 
 
 class Session(BaseModel):
@@ -31,7 +31,7 @@ class Session(BaseModel):
     online = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.fnid
+        return str(self.fnid)
 
 
 class SessionRequest(BaseModel):
@@ -44,7 +44,7 @@ class SessionRequest(BaseModel):
     online = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.fnid
+        return str(self.fnid)
 
 
 
