@@ -76,6 +76,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
         for student in class_list:
             print("student: ", student.__dict__)
             student_info = Student.objects.get(fnid=student.student_fnid)
+            print("Updating attendance table")
             attendance = Attendance(
                 institute_fnid=student.institute_fnid,
                 school_fnid=student_info.school_fnid,
@@ -83,8 +84,12 @@ class ListCreateSessionAPIView(ListCreateAPIView):
                 session_fnid=new_object.fnid,
                 student_fnid=student.student_fnid,
                 session_type_fnid=new_object.session_type_fnid
-            ).save()
-            print(student_info.__dict__)
+            )
+            print("nearly there")
+            try:
+                attendance.save()
+            except:
+                print("error saving attendance record")
         return new_object
 
 
