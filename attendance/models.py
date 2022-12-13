@@ -45,6 +45,7 @@ class SessionRequest(BaseModel):
     duration_mins = models.IntegerField(default=60)
     online = models.BooleanField(default=False)
     session_fnid = models.CharField(max_length=128, default=None, null=True)
+    expired = models.BooleanField(default=False)
 
 
     def __str__(self):
