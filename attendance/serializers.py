@@ -12,7 +12,8 @@ class SessionRequestSerializer(ModelSerializer):
                   'session_type_fnid',
                   'student_fnid',
                   'session_start',
-                  'duration_hrs'
+                  'duration_mins',
+                  'session_fnid',
                   )
 
         read_only_fields = ['fnid']
@@ -27,7 +28,7 @@ class SessionSerializer(ModelSerializer):
                   'course_instance_fnid',
                   'session_type_fnid',
                   'session_start',
-                  'duration_hrs')
+                  'duration_mins')
 
         read_only_fields = ['fnid']
 

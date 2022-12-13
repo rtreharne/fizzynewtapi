@@ -22,6 +22,7 @@ class ListCreateSessionRequestAPIView(ListCreateAPIView):
                         "institute_fnid",
                         "student_fnid",
                         "course_instance_fnid",
+                        "active"
                         ]
 
     def perform_create(self, serializer):
