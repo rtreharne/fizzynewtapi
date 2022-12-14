@@ -29,7 +29,6 @@ class Session(BaseModel):
     ignore = models.BooleanField(default=False)
     attendance = models.DecimalField(default=0.0, max_digits=4, decimal_places=1)
     online = models.BooleanField(default=False)
-    session_fnid = models.CharField(default=None, blank=True, null=True, max_length=128)
     expired = models.BooleanField(default=False)
 
     def __str__(self):

@@ -29,7 +29,8 @@ class SessionSerializer(ModelSerializer):
                   'course_instance_fnid',
                   'session_type_fnid',
                   'session_start',
-                  'duration_mins')
+                  'duration_mins',
+                  'expired')
 
         read_only_fields = ['fnid']
 
