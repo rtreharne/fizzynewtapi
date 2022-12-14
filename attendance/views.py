@@ -31,6 +31,8 @@ class ListCreateSessionRequestAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         queryset = SessionRequest.objects.all()
+        # Check this!
+        # print(len(queryset)) This is important!
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
             return queryset

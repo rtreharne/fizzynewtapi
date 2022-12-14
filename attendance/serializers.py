@@ -14,6 +14,7 @@ class SessionRequestSerializer(ModelSerializer):
                   'session_start',
                   'duration_mins',
                   'session_fnid',
+                  'expired',
                   )
 
         read_only_fields = ['fnid']
@@ -38,6 +39,7 @@ class AttendanceSerializer(ModelSerializer):
         model= Attendance
         fields = (
             'fnid',
+            'institute_fnid',
             'school_fnid',
             'course_instance_fnid',
             'session_fnid',
