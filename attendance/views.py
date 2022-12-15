@@ -75,7 +75,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
 
         # create records for all students
         print(new_object.__dict__)
-        class_list = CourseInstanceStudent.objects.all()
+        class_list = CourseInstanceStudent.objects.filter(course_instance_fnid=new_object.course_instance_fnid)
         for student in class_list:
             print("student: ", student.__dict__)
             student_info = Student.objects.get(fnid=student.student_fnid)
