@@ -73,8 +73,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         new_object = serializer.save()
 
-        # create records for all students
-        print(new_object.__dict__)
+        # create records for all
         class_list = CourseInstanceStudent.objects.filter(course_instance_fnid=new_object.course_instance_fnid)
         for student in class_list:
             print("student: ", student.__dict__)
@@ -119,7 +118,8 @@ class SessionDetailAPIView(RetrieveUpdateDestroyAPIView):
         queryset = Session.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
-            queryset = queryset.filter(institute_fnid=institute_fnid)
+            return queryset
+            #queryset = queryset.filter(institute_fnid=institute_fnid)
         else:
             raise exceptions.ParseError("institute_id not supplied in query string.")
         return queryset
