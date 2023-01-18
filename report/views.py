@@ -57,7 +57,7 @@ class ActiveSessionRequest(APIView):
         except:
             return Response({'error': 'Student does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
-        queryset = SessionRequest.objects.filter(institute_fnid=institute_fnid, student_fnid=student_fnid)
+        queryset = SessionRequest.objects.filter(institute_fnid=institute_fnid, student_fnid=student_fnid, expired=False)
         queryset = self.filter_by_datetime(request, queryset)
 
         serializer = SessionRequestSerializer(queryset, many=True)
