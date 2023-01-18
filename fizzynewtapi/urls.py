@@ -23,7 +23,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Fizzy Newt API",
       default_version='v1',
-      description="Test description",
+      description="Documentation for Fizzy Newt API",
       #terms_of_service="",
       #contact=openapi.Contact(email="contact@snippets.local"),
       #license=openapi.License(name="BSD License"),
