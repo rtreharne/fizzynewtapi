@@ -6,6 +6,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions
 from institute.models import InstituteConfig
 import datetime
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+
+token_param_config=openapi.Parameter('institute_fnid', in_=openapi.IN_QUERY, description="This parameter must be included in the query string of every call.", type=openapi.TYPE_STRING)
+
 
 
 def get_start_date_from_week(fnid):
@@ -121,6 +127,14 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
             return queryset
         else:
             raise exceptions.ParseError("institute_id not supplied in query string.")
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 class CourseInstanceDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = CourseInstanceSerializer

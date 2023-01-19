@@ -8,6 +8,11 @@ from institute.models import Institute, InstituteDomain, InstituteConfig, Term, 
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import exceptions
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+token_param_config=openapi.Parameter('institute_fnid', in_=openapi.IN_QUERY, description="This parameter must be included in the query string of every call.", type=openapi.TYPE_STRING)
+
 
 
 
@@ -177,6 +182,14 @@ class ListCreateSessionTypeAPIView(ListCreateAPIView):
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
 
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
 class SessionTypeDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = SessionTypeSerializer
     permission_classes = (IsAuthenticated,)
@@ -194,3 +207,11 @@ class SessionTypeDetailAPIView(RetrieveUpdateDestroyAPIView):
         else:
             raise exceptions.ParseError("institute_id not supplied in query string.")
         return queryset
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
