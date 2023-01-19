@@ -28,6 +28,53 @@ def json_datetime_to_python(json_dt):
     except:
         return json_dt
 
+class AttendanceBySession(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, institute_fnid=None, session_fnid=None):
+
+        try:
+            institute = Institute.objects.get(fnid=institute_fnid)
+        except:
+            return Response({'error': 'Institute does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            session = Session.objects.get(fnid=session_fnid)
+        except:
+            return Response({'error': 'Session does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = Attendance.objects.filter(institute_fnid=institute_fnid, session_fnid=session_fnid)
+
+        serializer = AttendanceSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AttendanceBySessionByStudent(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, institute_fnid=None, session_fnid=None, student_fnid=None):
+
+        try:
+            institute = Institute.objects.get(fnid=institute_fnid)
+        except:
+            return Response({'error': 'Institute does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            session = Session.objects.get(fnid=session_fnid)
+        except:
+            return Response({'error': 'Session does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            session = Student.objects.get(fnid=student_fnid)
+        except:
+            return Response({'error': 'Student does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = Attendance.objects.filter(institute_fnid=institute_fnid, session_fnid=session_fnid, student_fnid=student_fnid)
+
+        serializer = AttendanceSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ActiveSessionRequestStudent(APIView):
     serializer_class = SessionRequestSerializer
@@ -68,6 +115,48 @@ class ActiveSessionRequestStudent(APIView):
         serializer = SessionRequestSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class ActiveSessionStudent(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def filter_by_datetime(self, request, queryset):
+        if request.GET.get("after", False):
+            try:
+                queryset = queryset.filter(session_start__gte=json_datetime_to_python(request.GET["after"]))
+            except:
+                pass
+
+        if request.GET.get("before", False):
+            try:
+                queryset = queryset.filter(session_start__lte=json_datetime_to_python(request.GET["before"]))
+            except:
+                pass
+
+        return queryset
+
+    @swagger_auto_schema(manual_parameters=[token_param_start, token_param_end])
+    def get(self, request, institute_fnid=None, student_fnid=None):
+
+
+        try:
+            institute = Institute.objects.get(fnid=institute_fnid)
+        except:
+            return Response({'error': 'Institute does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            student = Student.objects.get(fnid=student_fnid)
+        except:
+            return Response({'error': 'Student does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        session_ids = [x.session_fnid for x in Attendance.objects.filter(institute_fnid=institute_fnid, student_fnid=student_fnid)]
+
+        queryset = Session.objects.filter(fnid__in=session_ids)
+        queryset = self.filter_by_datetime(request, queryset)
+
+        serializer = SessionSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class ActiveSessionRequestCourseInstance(APIView):
     serializer_class = CourseInstanceSerializer
     permission_classes = (IsAuthenticated,)
@@ -104,6 +193,44 @@ class ActiveSessionRequestCourseInstance(APIView):
         queryset = self.filter_by_datetime(request, queryset)
 
         serializer = SessionRequestSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ActiveSessionCourseInstance(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def filter_by_datetime(self, request, queryset):
+        if request.GET.get("after", False):
+            try:
+                queryset = queryset.filter(session_start__gte=json_datetime_to_python(request.GET["after"]))
+            except:
+                pass
+
+        if request.GET.get("before", False):
+            try:
+                queryset = queryset.filter(session_start__lte=json_datetime_to_python(request.GET["before"]))
+            except:
+                pass
+
+        return queryset
+
+    @swagger_auto_schema(manual_parameters=[token_param_start, token_param_end])
+    def get(self, request, institute_fnid=None, course_instance_fnid=None):
+
+        try:
+            institute = Institute.objects.get(fnid=institute_fnid)
+        except:
+            return Response({'error': 'Institute does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            course_instance = CourseInstance.objects.get(fnid=course_instance_fnid)
+        except:
+            return Response({'error': 'Student does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = Session.objects.filter(institute_fnid=institute_fnid, course_instance_fnid=course_instance_fnid, expired=False)
+        queryset = self.filter_by_datetime(request, queryset)
+
+        serializer = SessionSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
