@@ -10,23 +10,14 @@ from rest_framework import exceptions
 from course.models import CourseInstanceStudent
 from student.models import Student
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
 from institute.models import Institute
 from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework import status
-
-token_param_start = openapi.Parameter('after', in_=openapi.IN_QUERY, description="filter for session requests that started after this datetime", type=openapi.FORMAT_DATETIME)
-token_param_end = openapi.Parameter('before', in_=openapi.IN_QUERY, description="filter for session requests that started before this datetime", type=openapi.FORMAT_DATETIME)
-token_param_config=openapi.Parameter('institute_fnid', in_=openapi.IN_QUERY, description="This parameter must be included in the query string of every call.", type=openapi.TYPE_STRING)
-
-
-
-def json_datetime_to_python(json_dt):
-    try:
-        return datetime.strptime(json_dt, "%Y-%m-%dT%H:%M:%SZ")
-    except:
-        return json_dt
+from drf_yasg import openapi
+from helpers.token_params import *
+import helpers.filters
+from helpers.filters import json_datetime_to_python
 
 class AttendanceBySession(APIView):
 
@@ -233,6 +224,8 @@ class ActiveSessionCourseInstance(APIView):
         serializer = SessionSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+def filter_object_by_query(Object, query_params):
+    pass
 
 class ListCreateSessionRequestAPIView(ListCreateAPIView):
     serializer_class = SessionRequestSerializer
@@ -250,17 +243,28 @@ class ListCreateSessionRequestAPIView(ListCreateAPIView):
         new_object = serializer.save()
         return new_object
 
+
+
     def get_queryset(self):
-        queryset = SessionRequest.objects.all()
-        # Check this!
-        # print(len(queryset)) This is important!
+
         institute_fnid = self.request.query_params.get("institute_fnid", None)
+        filters = helpers.filters.build_filter_from_query_string(self.request)
+
         if institute_fnid:
+            queryset = SessionRequest.objects.filter(filters)
+            print("length of queryset", len(queryset))
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
 
-    @swagger_auto_schema(manual_parameters=[token_param_config])
+    @swagger_auto_schema(manual_parameters=[token_param_config,
+                                            token_param_course_instance,
+                                            token_param_student,
+                                            token_param_start,
+                                            token_param_end,
+                                            token_param_expired,
+                                            token_param_session,
+                                            token_param_session_type])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -279,13 +283,11 @@ class SessionRequestDetailAPIView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
 
-        queryset = SessionRequest.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
-            queryset = queryset.filter(institute_fnid=institute_fnid)
+            queryset = SessionRequest.objects.filter(institute_fnid=institute_fnid)
         else:
             raise exceptions.ParseError("institute_id not supplied in query string.")
-        return queryset
 
 
 class ListCreateSessionAPIView(ListCreateAPIView):

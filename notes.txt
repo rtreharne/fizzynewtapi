@@ -1,0 +1,8 @@
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InJ0cmVoYXJuZSIsImVtYWlsIjoidHJlaGFybmVAbGl2ZXJwb29sLmFjLnVrIiwiZXhwIjoxNjc0NzY1NDM5fQ.Xc4ivSGe98Nfz87ag6set5BFenZlUnAVR_7qhhMysZM
+
+institute_fnid
+37e60b8b-4bfa-410c-b85c-0e28b386d0d4
+
+course_instance_fnid
+b4044e2b-f1d7-4dbf-b3b5-5dd6f5ee0785
+
