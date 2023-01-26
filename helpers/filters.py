@@ -17,9 +17,12 @@ def build_filter_from_query_string(request):
     expired = request.query_params.get("expired", False)
     session_type_fnid = request.query_params.get("session_type_fnid", False)
     session_fnid = request.query_params.get("session_fnid", False)
+    fnid = request.query_params.get("fnid", False)
 
     if institute_fnid:
         filters = dmodels.Q(institute_fnid=institute_fnid)
+    if fnid:
+        filters = dmodels.Q(fnid=fnid)
     if course_instance_fnid:
         filters &= dmodels.Q(course_instance_fnid=course_instance_fnid)
     if after:

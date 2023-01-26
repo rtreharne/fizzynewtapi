@@ -7,3 +7,4 @@ token_param_session_type = openapi.Parameter('session_type_fnid', in_=openapi.IN
 token_param_session = openapi.Parameter('session_fnid', in_=openapi.IN_QUERY, description="filter for session_fnid", type=openapi.TYPE_STRING)
 token_param_expired = openapi.Parameter('expired', in_=openapi.IN_QUERY, description="filter for expired course requests", type=openapi.TYPE_BOOLEAN)
 token_param_course_instance=openapi.Parameter('course_instance_fnid', in_=openapi.IN_QUERY, description="filter for course_instance_fnid", type=openapi.TYPE_STRING)
+token_param_fnid=openapi.Parameter('fnid', in_=openapi.IN_QUERY, description="filter for object fnid", type=openapi.TYPE_STRING)

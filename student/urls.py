@@ -17,5 +17,4 @@ urlpatterns = [
     path('email/<str:fnid>/', StudentEmailDetailAPIView.as_view(), name="student-email"),
     path('term/<str:fnid>/', StudentTermDetailAPIView.as_view(), name="student-email"),
 
-
 ]
