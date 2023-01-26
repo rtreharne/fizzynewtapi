@@ -428,13 +428,6 @@ class AttendanceDetailAPIView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
 
-        queryset = Attendance.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
-        if institute_fnid:
-            queryset = queryset.filter(institute_fnid=institute_fnid)
-        else:
-            raise exceptions.ParseError("institute_id not supplied in query string.")
+        queryset = Attendance.objects.filter(institute_fnid=institute_fnid)
         return queryset
-
-
-
