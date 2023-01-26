@@ -26,9 +26,11 @@ class StudentSerializer(ModelSerializer):
                   'student_id',
                   'first_name',
                   'last_name',
+                  'undergraduate',
                   'year_of_study',
                   'international',
-                  'verified')
+                  'verified',
+                  'average_attend_pc')
 
         read_only_fields = ['fnid']
 
