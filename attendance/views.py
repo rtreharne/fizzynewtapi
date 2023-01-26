@@ -244,7 +244,7 @@ class ListCreateSessionRequestAPIView(ListCreateAPIView):
     def get_queryset(self):
 
         institute_fnid = self.request.query_params.get("institute_fnid", None)
-        filters = helpers.filters.build_filter_from_query_string(self.request)
+        filters = helpers.filters.build_filter_from_query_string(self.request, SessionRequest)
 
         if institute_fnid:
             queryset = SessionRequest.objects.filter(filters)
@@ -254,6 +254,7 @@ class ListCreateSessionRequestAPIView(ListCreateAPIView):
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
 
     @swagger_auto_schema(manual_parameters=[token_param_config,
+                                            token_param_fnid,
                                             token_param_course_instance,
                                             token_param_student,
                                             token_param_start,
@@ -323,7 +324,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
         return new_object
 
     @swagger_auto_schema(manual_parameters=[token_param_config,
-                                            token_param_session,
+                                            token_param_fnid,
                                             token_param_course_instance,
                                             token_param_student,
                                             token_param_start,
@@ -342,7 +343,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
     def get_queryset(self):
 
         institute_fnid = self.request.query_params.get("institute_fnid", None)
-        filters = helpers.filters.build_filter_from_query_string(self.request)
+        filters = helpers.filters.build_filter_from_query_string(self.request, Session)
 
         if institute_fnid:
             queryset = Session.objects.filter(filters)
@@ -390,13 +391,30 @@ class ListCreateAttendanceAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         institute_fnid = self.request.query_params.get("institute_fnid", None)
-        filters = helpers.filters.build_filter_from_query_string(self.request)
+        filters = helpers.filters.build_filter_from_query_string(self.request, Attendance)
 
         if institute_fnid:
             queryset = Attendance.objects.filter(filters)
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
+
+    @swagger_auto_schema(manual_parameters=[token_param_fnid,
+                                            token_param_config,
+                                            token_param_school,
+                                            token_param_course_instance,
+                                            token_param_session,
+                                            token_param_student,
+                                            token_param_start,
+                                            token_param_end,
+                                            token_param_present,
+                                            token_param_session_type])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
 class AttendanceDetailAPIView(RetrieveUpdateDestroyAPIView):
