@@ -224,8 +224,6 @@ class ActiveSessionCourseInstance(APIView):
         serializer = SessionSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-def filter_object_by_query(Object, query_params):
-    pass
 
 class ListCreateSessionRequestAPIView(ListCreateAPIView):
     serializer_class = SessionRequestSerializer
@@ -242,8 +240,6 @@ class ListCreateSessionRequestAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         new_object = serializer.save()
         return new_object
-
-
 
     def get_queryset(self):
 
@@ -326,7 +322,13 @@ class ListCreateSessionAPIView(ListCreateAPIView):
                 print("error saving attendance record")
         return new_object
 
-    @swagger_auto_schema(manual_parameters=[token_param_config])
+    @swagger_auto_schema(manual_parameters=[token_param_config,
+                                            token_param_course_instance,
+                                            token_param_student,
+                                            token_param_start,
+                                            token_param_end,
+                                            token_param_expired,
+                                            token_param_session_type])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -337,9 +339,12 @@ class ListCreateSessionAPIView(ListCreateAPIView):
 
 
     def get_queryset(self):
-        queryset = Session.objects.all()
+
         institute_fnid = self.request.query_params.get("institute_fnid", None)
+        filters = helpers.filters.build_filter_from_query_string(self.request)
+
         if institute_fnid:
+            queryset = Session.objects.filter(filters)
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
@@ -383,9 +388,11 @@ class ListCreateAttendanceAPIView(ListCreateAPIView):
         return new_object
 
     def get_queryset(self):
-        queryset = Attendance.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
+        filters = helpers.filters.build_filter_from_query_string(self.request)
+
         if institute_fnid:
+            queryset = Attendance.objects.filter(filters)
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
