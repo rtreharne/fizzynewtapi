@@ -427,7 +427,5 @@ class AttendanceDetailAPIView(RetrieveUpdateDestroyAPIView):
                         "session_fnid", "student_fnid", "session_type_fnid"]
 
     def get_queryset(self):
-
-        institute_fnid = self.request.query_params.get("institute_fnid", None)
-        queryset = Attendance.objects.filter(institute_fnid=institute_fnid)
+        queryset = Attendance.objects.all()
         return queryset

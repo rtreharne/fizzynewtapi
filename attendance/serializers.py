@@ -36,6 +36,7 @@ class SessionSerializer(ModelSerializer):
 
 
 class AttendanceSerializer(ModelSerializer):
+    lookup_field = 'fnid'
     class Meta:
         model= Attendance
         fields = (
@@ -50,3 +51,4 @@ class AttendanceSerializer(ModelSerializer):
                   )
 
         read_only_fields = ['fnid']
+
