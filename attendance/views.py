@@ -322,6 +322,8 @@ class ListCreateSessionAPIView(ListCreateAPIView):
                 print("error saving attendance record")
         return new_object
 
+    # Update
+
     @swagger_auto_schema(manual_parameters=[token_param_config,
                                             token_param_course_instance,
                                             token_param_student,
