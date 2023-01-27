@@ -14,6 +14,9 @@ class Attendance(BaseModel):
     verified = models.BooleanField(default=False)
     present = models.BooleanField(default=False)
     late = models.BooleanField(default=False)
+    void = models.BooleanField(default=False)
+    verified_by_administrator = models.BooleanField(default=False)
+    verified_by_audit = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.fnid)
@@ -30,6 +33,10 @@ class Session(BaseModel):
     attendance = models.DecimalField(default=0.0, max_digits=4, decimal_places=1)
     online = models.BooleanField(default=False)
     expired = models.BooleanField(default=False)
+    cancelled_by = models.CharField(max_length=128, null=True, default=None)
+    cancelled = models.BooleanField(default=False)
+    mandatory = models.BooleanField(default=True)
+    void = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.fnid)

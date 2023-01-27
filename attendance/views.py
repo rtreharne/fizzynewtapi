@@ -249,9 +249,31 @@ class AttendanceDetailAPIView(RetrieveUpdateDestroyAPIView):
     filter_backends = [DjangoFilterBackend]
     lookup_field = "fnid"
 
-    filterset_fields = ["institute_fnid", "school_fnid", "course_instance_fnid",
-                        "session_fnid", "student_fnid", "session_type_fnid"]
+    filterset_fields = ["institute_fnid"]
 
     def get_queryset(self):
-        queryset = Attendance.objects.all()
+
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            queryset = Attendance.objects.filter(institute_fnid=institute_fnid)
+            return queryset
+        else:
+            raise exceptions.ParseError("institute_id not supplied in query string.")
         return queryset
+
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
