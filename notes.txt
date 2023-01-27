@@ -11,6 +11,9 @@ b4044e2b-f1d7-4dbf-b3b5-5dd6f5ee0785
 session_fnid
 ba80df9e-b75c-4cad-8f42-91a5dabd2972
 
+session_request
+bc7cef64-36a0-4abf-86d5-17753a3c3405
+
 attendance_fnid
 7ce2b962-52d5-4aad-97d8-78691f59002a
 
@@ -24,4 +27,5 @@ student_fnid
 session_fnid
 d89ba279-dae0-483c-a733-1d5b0f93b68f
 
-
+attendance_fnid
+ad864c04-f553-4009-a494-9d78c48fab7f

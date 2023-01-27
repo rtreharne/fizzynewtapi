@@ -109,8 +109,25 @@ class SessionRequestDetailAPIView(RetrieveUpdateDestroyAPIView):
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
             queryset = SessionRequest.objects.filter(institute_fnid=institute_fnid)
+            return queryset
         else:
             raise exceptions.ParseError("institute_id not supplied in query string.")
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 class ListCreateSessionAPIView(ListCreateAPIView):
@@ -196,6 +213,22 @@ class SessionDetailAPIView(RetrieveUpdateDestroyAPIView):
         else:
             raise exceptions.ParseError("institute_id not supplied in query string.")
         return queryset
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 class ListCreateAttendanceAPIView(ListCreateAPIView):

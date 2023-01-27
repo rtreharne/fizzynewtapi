@@ -39,9 +39,9 @@ def build_filter_from_query_string(request, model_class):
     if course_instance_fnid and "course_instance_fnid" in fields:
         filters &= dmodels.Q(course_instance_fnid=course_instance_fnid)
     if after and "after" in fields:
-        filters &= dmodels.Q(session_start__gt=json_datetime_to_python(after))
+        filters &= dmodels.Q(session_start__gte=json_datetime_to_python(after))
     if before and "before" in fields:
-        filters &= dmodels.Q(session_start__lt=json_datetime_to_python(before))
+        filters &= dmodels.Q(session_start__lte=json_datetime_to_python(before))
     if student_fnid and "student_fnid" in fields:
         filters &= dmodels.Q(student_fnid=student_fnid)
     if expired and "expired" in fields:
