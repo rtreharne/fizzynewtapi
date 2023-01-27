@@ -30,7 +30,12 @@ class SessionSerializer(ModelSerializer):
                   'session_type_fnid',
                   'session_start',
                   'duration_mins',
-                  'expired')
+                  'expired',
+                  'online',
+                  'cancelled_by',
+                  'cancelled',
+                  'mandatory',
+                  'void',)
 
         read_only_fields = ['fnid']
 
@@ -47,7 +52,13 @@ class AttendanceSerializer(ModelSerializer):
             'session_fnid',
             'student_fnid',
             'session_type_fnid',
-            'present'
+            'group_fnid',
+            'present',
+            'verified',
+            'late',
+            'void',
+            'verified_by_administrator',
+            'verified_by_audit',
                   )
 
         read_only_fields = ['fnid']
