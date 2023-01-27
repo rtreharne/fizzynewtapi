@@ -10,8 +10,8 @@ urlpatterns = [
     path('request/<str:fnid>/', SessionRequestDetailAPIView.as_view(), name='update-session-request'),
     path('session/', ListCreateSessionAPIView.as_view(), name='session-request'),
     path('session/<str:fnid>/', SessionDetailAPIView.as_view(), name='update-session'),
-    path('<str:fnid>/', AttendanceDetailAPIView.as_view(), name='update-attendance'),
     path('average/', AverageAttendance.as_view(), name='average-attendance'),
+    path('<str:fnid>/', AttendanceDetailAPIView.as_view(), name='update-attendance'),
     path('', ListCreateAttendanceAPIView.as_view(), name='attendance'),
 
 

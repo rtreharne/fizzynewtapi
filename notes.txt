@@ -29,3 +29,6 @@ d89ba279-dae0-483c-a733-1d5b0f93b68f
 
 attendance_fnid
 ad864c04-f553-4009-a494-9d78c48fab7f
+
+attendance_request
+e9d2a8d9-1446-405e-8d41-7616637e846c
