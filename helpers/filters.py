@@ -1,6 +1,7 @@
 from django.db import models as dmodels
 from datetime import datetime
 import json
+from attendance.models import Session
 
 def json_datetime_to_python(json_dt):
     try:
@@ -24,8 +25,15 @@ def build_filter_from_query_string(request, model_class):
     present = request.query_params.get("present", False)
     school_fnid = request.query_params.get("school_fnid", False)
 
+
+
+
     if institute_fnid and "institute_fnid" in fields:
         filters = dmodels.Q(institute_fnid=institute_fnid)
+    if model_class == Session:
+        print("Looking for session")
+        if session_fnid:
+            filters = dmodels.Q(fnid=session_fnid)
     if fnid and "fnid" in fields:
         filters &= dmodels.Q(fnid=fnid)
     if course_instance_fnid and "course_instance_fnid" in fields:
