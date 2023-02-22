@@ -8,9 +8,7 @@ from school.models import School
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
-
-token_param_config=openapi.Parameter('institute_fnid', in_=openapi.IN_QUERY, description="This parameter must be included in the query string of every call.", type=openapi.TYPE_STRING)
-
+from helpers.token_params import *
 
 class ListCreateSchoolAPIView(ListCreateAPIView):
     serializer_class = SchoolSerializer

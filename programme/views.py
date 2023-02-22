@@ -5,6 +5,9 @@ from programme.models import Programme
 from institute.models import Institute, InstituteConfig
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions
+from helpers.token_params import *
+from drf_yasg.utils import swagger_auto_schema
+
 
 class ListCreateProgrammeAPIView(ListCreateAPIView):
     serializer_class = ProgrammeSerializer
@@ -12,7 +15,6 @@ class ListCreateProgrammeAPIView(ListCreateAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["fnid", "institute_fnid", "name", "school_fnid"]
-
 
     def perform_create(self, serializer):
         term_start_week = serializer.validated_data.get("term_start_week", False)
@@ -31,6 +33,14 @@ class ListCreateProgrammeAPIView(ListCreateAPIView):
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
 class ProgrammeDetailAPIView(RetrieveUpdateDestroyAPIView):

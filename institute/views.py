@@ -210,7 +210,7 @@ class SessionTypeDetailAPIView(RetrieveUpdateDestroyAPIView):
 
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
 
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def post(self, request, *args, **kwargs):
