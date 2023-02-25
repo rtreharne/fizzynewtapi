@@ -22,7 +22,7 @@ class Student(BaseModel):
     undergraduate = models.BooleanField(default=True)
     international = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
-    average_attend_pc = models.DecimalField(default=0.0, decimal_places=1, max_digits=4)
+    average_attend_pc = models.DecimalField(default=0.0, decimal_places=1, max_digits=5)
 
 
     class Meta:
