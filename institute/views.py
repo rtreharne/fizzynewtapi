@@ -105,10 +105,19 @@ class ListCreateTermAPIView(ListCreateAPIView):
     def get_queryset(self):
         queryset = Term.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
+
         if institute_fnid:
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 class TermDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = TermSerializer

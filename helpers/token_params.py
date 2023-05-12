@@ -9,4 +9,5 @@ token_param_expired = openapi.Parameter('expired', in_=openapi.IN_QUERY, descrip
 token_param_course_instance=openapi.Parameter('course_instance_fnid', in_=openapi.IN_QUERY, description="filter for course_instance_fnid", type=openapi.TYPE_STRING)
 token_param_fnid=openapi.Parameter('fnid', in_=openapi.IN_QUERY, description="filter for object fnid", type=openapi.TYPE_STRING)
 token_param_school=openapi.Parameter('school_fnid', in_=openapi.IN_QUERY, description="filter for school_fnid", type=openapi.TYPE_STRING)
+token_param_programme=openapi.Parameter('programme_fnid', in_=openapi.IN_QUERY, description="filter for programme_fnid", type=openapi.TYPE_STRING)
 token_param_present=openapi.Parameter('present', in_=openapi.IN_QUERY, description="filter for present", type=openapi.TYPE_BOOLEAN)

@@ -9,7 +9,7 @@ def json_datetime_to_python(json_dt):
     except:
         return json_dt
 
-def build_filter_from_query_string(request, model_class):
+def build_filter_from_query_string(request, model_class, expired_override=None):
 
     fields = [f.name for f in model_class._meta.get_fields()]
 
@@ -18,12 +18,22 @@ def build_filter_from_query_string(request, model_class):
     after = request.query_params.get("after", False)
     before = request.query_params.get("before", False)
     student_fnid = request.query_params.get("student_fnid", False)
-    expired = request.query_params.get("expired", False)
+    expired = request.query_params.get("expired", None)
+
+    print("expired", expired, "expired_override", expired_override)
+    if expired_override is not None:
+        if expired_override:
+            expired = "true"
+        else:
+            expired = "false"
+
+    print("new_expired", expired)
     session_type_fnid = request.query_params.get("session_type_fnid", False)
     session_fnid = request.query_params.get("session_fnid", False)
     fnid = request.query_params.get("fnid", False)
     present = request.query_params.get("present", False)
     school_fnid = request.query_params.get("school_fnid", False)
+    programme_fnid = request.query_params.get("programme_fnid", False)
 
 
 
@@ -44,7 +54,7 @@ def build_filter_from_query_string(request, model_class):
         filters &= dmodels.Q(session_start__lte=json_datetime_to_python(before))
     if student_fnid and "student_fnid" in fields:
         filters &= dmodels.Q(student_fnid=student_fnid)
-    if expired and "expired" in fields:
+    if expired is not None and "expired" in fields:
         filters &= dmodels.Q(expired=json.loads(expired))
     if session_type_fnid and "session_type_fnid" in fields:
         filters &= dmodels.Q(session_type_fnid=session_type_fnid)
@@ -53,6 +63,8 @@ def build_filter_from_query_string(request, model_class):
     if present and "present" in fields:
         filters &= dmodels.Q(present=json.loads(present))
     if school_fnid and "school_fnid" in fields:
+        filters &= dmodels.Q(school_fnid=school_fnid)
+    if programme_fnid and "school_fnid" in fields:
         filters &= dmodels.Q(school_fnid=school_fnid)
 
     return filters
