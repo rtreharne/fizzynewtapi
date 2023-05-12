@@ -23,9 +23,6 @@ class ActiveSession(APIView):
     @swagger_auto_schema(manual_parameters=[token_param_config,
                                             token_param_school,
                                             token_param_course_instance,
-                                            token_param_start,
-                                            token_param_end,
-                                            token_param_present,
                                             token_param_session_type,
                                             token_param_programme
                                             ])
