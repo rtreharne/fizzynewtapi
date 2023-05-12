@@ -2,6 +2,8 @@ from attendance.views import ListCreateSessionRequestAPIView, \
     ListCreateSessionAPIView, SessionRequestDetailAPIView, \
     SessionDetailAPIView, AttendanceDetailAPIView, ListCreateAttendanceAPIView, AverageAttendance
 
+from report.views import ActiveSession
+
 from django.urls import path
 
 urlpatterns = [
@@ -12,7 +14,7 @@ urlpatterns = [
     path('session/<str:fnid>/', SessionDetailAPIView.as_view(), name='update-session'),
     path('average/', AverageAttendance.as_view(), name='average-attendance'),
     path('<str:fnid>/', AttendanceDetailAPIView.as_view(), name='update-attendance'),
-    path('', ListCreateAttendanceAPIView.as_view(), name='attendance'),
+    path('livesessionoverview/', ActiveSession.as_view(), name='active-session-overview'),
 
 
 ]
