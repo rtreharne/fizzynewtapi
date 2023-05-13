@@ -14,7 +14,7 @@ urlpatterns = [
     path('session/<str:fnid>/', SessionDetailAPIView.as_view(), name='update-session'),
     path('average/', AverageAttendance.as_view(), name='average-attendance'),
     path('<str:fnid>/', AttendanceDetailAPIView.as_view(), name='update-attendance'),
-    path('livesessionoverview/', ActiveSession.as_view(), name='active-session-overview'),
+    path('', ListCreateAttendanceAPIView.as_view(), name="create-attendance")
 
 
 ]

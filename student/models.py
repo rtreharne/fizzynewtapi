@@ -23,6 +23,7 @@ class Student(BaseModel):
     international = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
     average_attend_pc = models.DecimalField(default=0.0, decimal_places=1, max_digits=5)
+    active = models.BooleanField(default=True)
 
 
     class Meta:

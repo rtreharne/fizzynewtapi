@@ -11,3 +11,5 @@ token_param_fnid=openapi.Parameter('fnid', in_=openapi.IN_QUERY, description="fi
 token_param_school=openapi.Parameter('school_fnid', in_=openapi.IN_QUERY, description="filter for school_fnid", type=openapi.TYPE_STRING)
 token_param_programme=openapi.Parameter('programme_fnid', in_=openapi.IN_QUERY, description="filter for programme_fnid", type=openapi.TYPE_STRING)
 token_param_present=openapi.Parameter('present', in_=openapi.IN_QUERY, description="filter for present", type=openapi.TYPE_BOOLEAN)
+token_param_min=openapi.Parameter('min', in_=openapi.IN_QUERY, description="Min value (Int required)", type=openapi.TYPE_INTEGER)
+token_param_max=openapi.Parameter('max', in_=openapi.IN_QUERY, description="Max value (Int optional)", type=openapi.TYPE_INTEGER)

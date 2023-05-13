@@ -30,7 +30,8 @@ class StudentSerializer(ModelSerializer):
                   'year_of_study',
                   'international',
                   'verified',
-                  'average_attend_pc')
+                  'average_attend_pc',
+                  'active')
 
         read_only_fields = ['fnid']
 

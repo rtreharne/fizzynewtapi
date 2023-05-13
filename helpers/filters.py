@@ -9,7 +9,7 @@ def json_datetime_to_python(json_dt):
     except:
         return json_dt
 
-def build_filter_from_query_string(request, model_class, expired_override=None):
+def build_filter_from_query_string(request, model_class, expired_override=None, active_override=False):
 
     fields = [f.name for f in model_class._meta.get_fields()]
 
@@ -19,8 +19,14 @@ def build_filter_from_query_string(request, model_class, expired_override=None):
     before = request.query_params.get("before", False)
     student_fnid = request.query_params.get("student_fnid", False)
     expired = request.query_params.get("expired", None)
+    active = request.query_params.get("active", None)
 
-    print("expired", expired, "expired_override", expired_override)
+    if active_override is not None:
+        if active_override:
+            active = "true"
+        else:
+            active = "false"
+
     if expired_override is not None:
         if expired_override:
             expired = "true"
@@ -66,5 +72,7 @@ def build_filter_from_query_string(request, model_class, expired_override=None):
         filters &= dmodels.Q(school_fnid=school_fnid)
     if programme_fnid and "school_fnid" in fields:
         filters &= dmodels.Q(school_fnid=school_fnid)
+    if active and "active" in fields:
+        filters &= dmodels.Q(active=json.loads(active))
 
     return filters
