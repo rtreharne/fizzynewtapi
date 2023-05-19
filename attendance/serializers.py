@@ -48,6 +48,7 @@ class AttendanceSerializer(ModelSerializer):
             'fnid',
             'institute_fnid',
             'school_fnid',
+            'programme_fnid',
             'course_instance_fnid',
             'session_fnid',
             'student_fnid',

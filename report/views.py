@@ -3,9 +3,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from student.models import Student
-from course.models import Course, CourseInstanceStudent
+from course.models import Course, CourseInstanceStudent, CourseInstance
 from attendance.models import SessionRequest
 from institute.models import Institute
+from school.models import School
+from programme.models import Programme
 from attendance.models import Session, Attendance
 from datetime import datetime, timedelta
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +16,17 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from helpers.token_params import *
 import helpers.filters
+
+
+def get_or_false(classmodel, parameter):
+    if parameter:
+        try:
+            classmodel.objects.get(fnid=parameter)
+            return True
+        except classmodel.DoesNotExist:
+            return False
+    else:
+        return True
 
 
 class ActiveSession(APIView):
@@ -26,26 +39,47 @@ class ActiveSession(APIView):
                                             token_param_session_type,
                                             token_param_programme
                                             ])
+
+
+
     def get(self, request):
         institute_fnid = request.query_params.get("institute_fnid", None)
+        if not get_or_false(Institute, institute_fnid):
+            return Response({'error': 'Institute not found'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get school_fnid if in query string
         school_fnid = request.query_params.get("school_fnid", None)
+        if not get_or_false(School, school_fnid):
+            return Response({'error': 'School not found'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get course_instance_fnid if in query string
         course_instance_fnid = request.query_params.get("course_instance_fnid", None)
+        if not get_or_false(CourseInstance, course_instance_fnid):
+            return Response({'error': 'Course Instance not found'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get programme_fnid if in query string
         programme_fnid = request.query_params.get("programme_fnid", None)
+        if not get_or_false(Programme, programme_fnid):
+            return Response({'error': 'Programme not found'}, status=status.HTTP_400_BAD_REQUEST)
+
 
         # Get all ongoing sessions
         filters_session = helpers.filters.build_filter_from_query_string(request, Session, expired_override=False)
 
+        # Get all relevant students
+        #filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True)
+
         if institute_fnid:
+
             sessions = [x.fnid for x in Session.objects.filter(filters_session)]
 
             # Get all attendance records associated with ongoing sessions
             attendance_records_all = Attendance.objects.filter(session_fnid__in=sessions)
+
+            # Filter if programme specifiec
+            if programme_fnid:
+                attendance_records_all = attendance_records_all.filter(programme_fnid=programme_fnid)
+
 
             # Get all attendance records associated with ongoing sessions where students are present
             attendance_records_present = attendance_records_all.filter(present=True)

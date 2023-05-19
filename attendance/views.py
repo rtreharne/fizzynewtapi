@@ -48,7 +48,7 @@ class AverageAttendance(APIView):
             return Response({'average_attendance': average_attendance}, status=status.HTTP_200_OK)
 
         else:
-            return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Could not find institute'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ListCreateSessionRequestAPIView(ListCreateAPIView):
@@ -154,6 +154,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
             attendance = Attendance(
                 institute_fnid=student.institute_fnid,
                 school_fnid=student_info.school_fnid,
+                programme_fnid = student_info.programme_fnid,
                 course_instance_fnid=student.course_instance_fnid,
                 session_fnid=new_object.fnid,
                 student_fnid=student.student_fnid,

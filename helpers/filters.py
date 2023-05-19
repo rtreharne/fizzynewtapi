@@ -40,6 +40,7 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     present = request.query_params.get("present", False)
     school_fnid = request.query_params.get("school_fnid", False)
     programme_fnid = request.query_params.get("programme_fnid", False)
+    print("Filter - programme_fnid", programme_fnid)
 
 
 
@@ -49,7 +50,7 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     if model_class == Session:
         print("Looking for session")
         if session_fnid:
-            filters = dmodels.Q(fnid=session_fnid)
+            filters &= dmodels.Q(fnid=session_fnid)
     if fnid and "fnid" in fields:
         filters &= dmodels.Q(fnid=fnid)
     if course_instance_fnid and "course_instance_fnid" in fields:
@@ -70,8 +71,8 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
         filters &= dmodels.Q(present=json.loads(present))
     if school_fnid and "school_fnid" in fields:
         filters &= dmodels.Q(school_fnid=school_fnid)
-    if programme_fnid and "school_fnid" in fields:
-        filters &= dmodels.Q(school_fnid=school_fnid)
+    if programme_fnid and "programme_fnid" in fields:
+        filters &= dmodels.Q(school_fnid=programme_fnid)
     if active and "active" in fields:
         filters &= dmodels.Q(active=json.loads(active))
 

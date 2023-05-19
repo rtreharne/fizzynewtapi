@@ -6,6 +6,7 @@ from helpers.models import BaseModel
 class Attendance(BaseModel):
     institute_fnid = models.CharField(max_length=128)
     school_fnid = models.CharField(max_length=128)
+    programme_fnid = models.CharField(max_length=128, blank=True, null=True)
     course_instance_fnid = models.CharField(max_length=128)
     session_fnid = models.CharField(max_length=128)
     student_fnid = models.CharField(max_length=128)
