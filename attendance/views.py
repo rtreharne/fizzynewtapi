@@ -43,7 +43,7 @@ class AverageAttendance(APIView):
             try:
                 average_attendance = float('{0:5g}'.format((queryset.filter(present=True).count()/queryset.count())*100))
             except ZeroDivisionError:
-                average_attendance = None
+                average_attendance = 0
 
             return Response({'average_attendance': average_attendance}, status=status.HTTP_200_OK)
 
