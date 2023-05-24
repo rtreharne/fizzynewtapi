@@ -35,8 +35,8 @@ class InstituteConfig(BaseModel):
 class Term(BaseModel):
     institute_fnid = models.CharField(max_length=128)
     label = models.CharField(max_length=128)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
     registration_start = models.DateField()
 
     class Meta:
