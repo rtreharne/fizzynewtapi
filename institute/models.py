@@ -37,7 +37,7 @@ class Term(BaseModel):
     label = models.CharField(max_length=128)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    registration_start = models.DateField()
+    registration_start = models.DateTimeFieldField()
 
     class Meta:
         unique_together = ('institute_fnid', 'label',)
