@@ -43,7 +43,7 @@ class TermSerializer(ModelSerializer):
 
     class Meta:
         model = Term
-        fields = ('fnid', 'institute_fnid', 'label', 'start_date', 'end_date', 'registration_start')
+        fields = ('fnid', 'institute_fnid', 'label', 'start_date', 'end_date', 'registration_start', 'current')
 
         read_only_fields = ['fnid']
 
