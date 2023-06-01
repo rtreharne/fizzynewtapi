@@ -38,9 +38,10 @@ class Term(BaseModel):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     registration_start = models.DateTimeField()
+    current = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ('institute_fnid', 'label',)
+        unique_together = ('institute_fnid', 'label')
 
     def __str__(self):
         return self.label
