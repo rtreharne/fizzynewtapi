@@ -23,6 +23,7 @@ class AverageAttendance(APIView):
 
     @swagger_auto_schema(manual_parameters=[token_param_config,
                                             token_param_school,
+                                            token_param_programme,
                                             token_param_course_instance,
                                             token_param_session,
                                             token_param_student,
@@ -35,8 +36,11 @@ class AverageAttendance(APIView):
         filters_session = helpers.filters.build_filter_from_query_string(request, Session)
         filters_attendance = helpers.filters.build_filter_from_query_string(request, Attendance)
 
+        print("Filters: ", filters_session)
+        print("Filters Attendance:", filters_attendance)
+
         if institute_fnid:
-            sessions = [x.fnid for x in Session.objects.filter(filters_session).filter(session_start__lte=datetime.now())]
+            sessions = [x.fnid for x in Session.objects.filter(filters_session)]
             print("sessions", len(sessions))
             queryset = Attendance.objects.filter(filters_attendance).filter(session_fnid__in=sessions)
 

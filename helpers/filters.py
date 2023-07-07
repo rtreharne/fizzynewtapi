@@ -1,11 +1,11 @@
 from django.db import models as dmodels
 from datetime import datetime
 import json
-from attendance.models import Session
+from attendance.models import Session, Attendance
 
 def json_datetime_to_python(json_dt):
     try:
-        return datetime.strptime(json_dt, "%Y-%m-%dT%H:%M:%SZ")
+        return datetime.strptime(json_dt, "%Y-%m-%dT%H:%M:%S")
     except:
         return json_dt
 
@@ -13,13 +13,20 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
 
     fields = [f.name for f in model_class._meta.get_fields()]
 
+    print(model_class, fields)
+    print("Hello")
+    
+
     institute_fnid = request.query_params.get("institute_fnid", None)
+    programme_fnid = request.query_params.get("programme_fnid", None)
     course_instance_fnid = request.query_params.get("course_instance_fnid", False)
     after = request.query_params.get("after", False)
     before = request.query_params.get("before", False)
     student_fnid = request.query_params.get("student_fnid", False)
     expired = request.query_params.get("expired", None)
     active = request.query_params.get("active", None)
+
+    print("programme_fnid", programme_fnid)
 
     if active_override is not None:
         if active_override:
@@ -33,32 +40,34 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
         else:
             expired = "false"
 
-    print("new_expired", expired)
     session_type_fnid = request.query_params.get("session_type_fnid", False)
     session_fnid = request.query_params.get("session_fnid", False)
     fnid = request.query_params.get("fnid", False)
     present = request.query_params.get("present", False)
     school_fnid = request.query_params.get("school_fnid", False)
     programme_fnid = request.query_params.get("programme_fnid", False)
-    print("Filter - programme_fnid", programme_fnid)
-
-
 
 
     if institute_fnid and "institute_fnid" in fields:
         filters = dmodels.Q(institute_fnid=institute_fnid)
+
     if model_class == Session:
-        print("Looking for session")
+
         if session_fnid:
             filters &= dmodels.Q(fnid=session_fnid)
+        if before:
+            filters &= dmodels.Q(session_start__lte=json_datetime_to_python(before))
+        else:
+            filters &= dmodels.Q(session_start__lte=datetime.now())
+        if after:
+            filters &= dmodels.Q(session_start__gte=json_datetime_to_python(after))
+
     if fnid and "fnid" in fields:
         filters &= dmodels.Q(fnid=fnid)
     if course_instance_fnid and "course_instance_fnid" in fields:
         filters &= dmodels.Q(course_instance_fnid=course_instance_fnid)
-    if after and "after" in fields:
-        filters &= dmodels.Q(session_start__gte=json_datetime_to_python(after))
-    if before and "before" in fields:
-        filters &= dmodels.Q(session_start__lte=json_datetime_to_python(before))
+
+    
     if student_fnid and "student_fnid" in fields:
         filters &= dmodels.Q(student_fnid=student_fnid)
     if expired is not None and "expired" in fields:
@@ -72,7 +81,7 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     if school_fnid and "school_fnid" in fields:
         filters &= dmodels.Q(school_fnid=school_fnid)
     if programme_fnid and "programme_fnid" in fields:
-        filters &= dmodels.Q(school_fnid=programme_fnid)
+        filters &= dmodels.Q(programme_fnid=programme_fnid)
     if active and "active" in fields:
         filters &= dmodels.Q(active=json.loads(active))
 
