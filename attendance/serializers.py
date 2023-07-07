@@ -60,6 +60,7 @@ class AttendanceSerializer(ModelSerializer):
             'void',
             'verified_by_administrator',
             'verified_by_audit',
+            'approved_absence',
                   )
 
         read_only_fields = ['fnid']

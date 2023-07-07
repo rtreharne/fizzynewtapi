@@ -82,13 +82,19 @@ class ActiveSession(APIView):
 
 
             # Get all attendance records associated with ongoing sessions where students are present
-            attendance_records_present = attendance_records_all.filter(present=True)
+            attendance_records_present = attendance_records_all.filter(present=True).count() + attendance_records_all.filter(present=False, approved_absence=True).count()
+
+            print("Attendance present:", attendance_records_present)
 
             # Calculate attendance percentage
             total_students = len(attendance_records_all)
-            attending_students = len(attendance_records_present)
+            attending_students = attendance_records_present
             if total_students != 0:
-                attendance_percentage = (attending_students / total_students) * 100
+                try:
+                    attendance_percentage = float('{0:5g}'.format(attending_students * 100 / total_students))
+                except ZeroDivisionError:
+                    attendance_percentage = 0
+
             else:
                 attendance_percentage = 0
 

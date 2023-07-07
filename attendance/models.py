@@ -18,6 +18,7 @@ class Attendance(BaseModel):
     void = models.BooleanField(default=False)
     verified_by_administrator = models.CharField(max_length=128, null=True, default=None)
     verified_by_audit = models.CharField(max_length=128, null=True, default=None)
+    approved_absence = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.fnid)

@@ -45,7 +45,7 @@ class AverageAttendance(APIView):
             queryset = Attendance.objects.filter(filters_attendance).filter(session_fnid__in=sessions)
 
             try:
-                average_attendance = float('{0:5g}'.format((queryset.filter(present=True).count()/queryset.count())*100))
+                average_attendance = float('{0:5g}'.format(((queryset.filter(present=True).count()+queryset.filter(present=False, approved_absence=True).count())/queryset.count())*100))
             except ZeroDivisionError:
                 average_attendance = 0
 
