@@ -4,7 +4,7 @@ from helpers.models import BaseModel
 
 class School(BaseModel):
 
-    institute_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
     name = models.CharField(max_length=128)
 
     class Meta:

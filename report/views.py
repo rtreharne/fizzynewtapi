@@ -186,6 +186,57 @@ class AttendanceOverview(APIView):
 
         else:
             return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class CountActiveStudents(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config,
+                                            token_param_school,
+                                            token_param_course_instance,
+                                            token_param_programme
+                                            ])
+    def get(self, request):
+        institute_fnid = request.query_params.get("institute_fnid", None)
+
+        # Get school_fnid if in query string
+        school_fnid = request.query_params.get("school_fnid", None)
+
+        # Get course_instance_fnid if in query string
+        course_instance_fnid = request.query_params.get("course_instance_fnid", None)
+
+        # Get programme_fnid if in query string
+        programme_fnid = request.query_params.get("programme_fnid", None)
+
+        construct = [course_instance_fnid, programme_fnid, school_fnid]
+
+        # Remove None values from construct
+        construct = [x for x in construct if x != ""]
+
+        if len(construct) > 1:
+            return Response({'error': 'Only one optional parmeter permitted.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get all active students
+        filters_student = helpers.filters.build_filter_from_query_string(request, Student)
+
+        if institute_fnid:
+            students = [x.fnid for x in Student.objects.filter(filters_student)]
+
+            # Get all attendance records associated with ongoing sessions
+            active_students_count = Student.objects.filter(filters_student).filter(active=True).count()
+
+            # Build JSON response data
+            data = {
+                "institute_fnid": institute_fnid,
+                "school_fnid": school_fnid,
+                "programme_fnid": programme_fnid,
+                "course_instance_fnid": course_instance_fnid,
+                "active_students": active_students_count
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+
+        else:
+            return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

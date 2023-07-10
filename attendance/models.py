@@ -4,14 +4,14 @@ from helpers.models import BaseModel
 
 
 class Attendance(BaseModel):
-    institute_fnid = models.CharField(max_length=128)
-    school_fnid = models.CharField(max_length=128)
-    programme_fnid = models.CharField(max_length=128, blank=True, null=True)
-    course_instance_fnid = models.CharField(max_length=128)
-    session_fnid = models.CharField(max_length=128)
-    student_fnid = models.CharField(max_length=128)
-    session_type_fnid = models.CharField(max_length=128)
-    group_fnid = models.CharField(max_length=128, blank=True, null=True, default=None)
+    institute_fnid = models.UUIDField()
+    school_fnid = models.UUIDField()
+    programme_fnid = models.UUIDField(blank=True, null=True)
+    course_instance_fnid = models.UUIDField()
+    session_fnid = models.UUIDField()
+    student_fnid = models.UUIDField()
+    session_type_fnid = models.UUIDField()
+    group_fnid = models.UUIDField(blank=True, null=True)
     verified = models.BooleanField(default=False)
     present = models.BooleanField(default=False)
     late = models.BooleanField(default=False)
@@ -25,9 +25,9 @@ class Attendance(BaseModel):
 
 
 class Session(BaseModel):
-    session_type_fnid = models.CharField(max_length=128)
-    institute_fnid = models.CharField(max_length=128)
-    course_instance_fnid = models.CharField(max_length=128)
+    session_type_fnid = models.UUIDField()
+    institute_fnid = models.UUIDField()
+    course_instance_fnid = models.UUIDField()
     session_start = models.DateTimeField()
     duration_mins = models.IntegerField(default=60)
     session_audit = models.BooleanField(default=False)
@@ -45,14 +45,14 @@ class Session(BaseModel):
 
 
 class SessionRequest(BaseModel):
-    institute_fnid = models.CharField(max_length=128)
-    student_fnid = models.CharField(max_length=128)
-    course_instance_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
+    student_fnid = models.UUIDField()
+    course_instance_fnid = models.UUIDField()
     session_start = models.DateTimeField()
-    session_type_fnid = models.CharField(max_length=128)
+    session_type_fnid = models.UUIDField()
     duration_mins = models.IntegerField(default=60)
     online = models.BooleanField(default=False)
-    session_fnid = models.CharField(max_length=128, default=None, null=True)
+    session_fnid = models.UUIDField(max_length=128, null=True)
     expired = models.BooleanField(default=False)
 
 

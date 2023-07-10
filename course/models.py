@@ -7,7 +7,7 @@ from django.utils import timezone
 
 class Course(BaseModel):
 
-    institute_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
     code = models.CharField(max_length=9, help_text="(e.g. MATH101)")
     name = models.CharField(max_length=128)
     visible = models.BooleanField(default=True)
@@ -24,9 +24,9 @@ class Course(BaseModel):
 
 class CourseInstanceStudent(BaseModel):
 
-    institute_fnid = models.CharField(max_length=128)
-    student_fnid = models.CharField(max_length=128)
-    course_instance_fnid = models.CharField(max_length=128, default="")
+    institute_fnid = models.UUIDField()
+    student_fnid = models.UUIDField()
+    course_instance_fnid = models.UUIDField(null=True, blank=True)
     average_attend_pc = models.DecimalField(default=0.0, decimal_places=1, max_digits=4)
     resit = models.BooleanField(default=False)
 
@@ -38,9 +38,9 @@ class CourseInstanceStudent(BaseModel):
 
 class CourseInstance(BaseModel):
 
-    institute_fnid = models.CharField(max_length=128)
-    course_fnid = models.CharField(max_length=128)
-    term_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
+    course_fnid = models.UUIDField()
+    term_fnid = models.UUIDField()
     name_override = models.CharField(max_length=128)
     threshold_override = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(100), MinValueValidator(1)])
     start_date_override = models.DateField(null=True, blank=True)

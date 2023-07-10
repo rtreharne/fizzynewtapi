@@ -5,8 +5,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Programme(BaseModel):
 
-    institute_fnid = models.CharField(max_length=128)
-    school_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
+    school_fnid = models.UUIDField()
     code = models.CharField(max_length=9, blank=None, null=True)
     name = models.CharField(max_length=128)
     term_start_week = models.PositiveIntegerField(default=34, validators=[MinValueValidator(1), MaxValueValidator(52)])

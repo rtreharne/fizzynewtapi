@@ -25,7 +25,7 @@ class InstituteDomain(TrackingModel):
 
 
 class InstituteConfig(BaseModel):
-    institute_fnid = models.CharField(max_length=128, unique=True)
+    institute_fnid = models.UUIDField()
     student_id_required = models.BooleanField(default=False)
     term_start_week = models.PositiveIntegerField(default=35, validators=[MinValueValidator(1), MaxValueValidator(52)])
 
@@ -33,7 +33,7 @@ class InstituteConfig(BaseModel):
         self.institute_fnid
 
 class Term(BaseModel):
-    institute_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
     label = models.CharField(max_length=128)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
@@ -48,10 +48,10 @@ class Term(BaseModel):
 
 
 class Year(BaseModel):
-    institute_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
     label = models.CharField(max_length=128)
-    previous_year_fnid = models.CharField(max_length=128, null=True, blank=True)
-    next_year_fnid = models.CharField(max_length=128, null=True, blank=True)
+    previous_year_fnid = models.UUIDField(blank=True, null=True)
+    next_year_fnid = models.UUIDField(blank=True, null=True)
 
     class Meta:
         unique_together = ('institute_fnid', 'label',)
@@ -61,7 +61,7 @@ class Year(BaseModel):
 
 
 class SessionType(BaseModel):
-    institute_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
     label = models.CharField(max_length=128)
 
     class Meta:

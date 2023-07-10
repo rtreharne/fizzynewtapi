@@ -12,9 +12,9 @@ class Student(BaseModel):
                   (6, '6'),
                   (7, '7'))
 
-    institute_fnid = models.CharField(max_length=128)
-    school_fnid = models.CharField(max_length=128, null=True, blank=True)
-    programme_fnid = models.CharField(max_length=128, null=True, blank=True)
+    institute_fnid = models.UUIDField()
+    school_fnid = models.UUIDField(blank=True, null=True)
+    programme_fnid = models.UUIDField(blank=True, null=True)
     year_of_study = models.IntegerField()
     student_id = models.CharField(max_length=20, null=True, blank=True, default=None)
     first_name = models.CharField(max_length=128, null=True, blank=True)
@@ -33,8 +33,8 @@ class Student(BaseModel):
         return self.last_name
 
 class StudentEmail(BaseModel):
-    institute_fnid = models.CharField(max_length=128)
-    student_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
+    student_fnid = models.UUIDField()
     email = models.EmailField(max_length=128, unique=True)
     primary = models.BooleanField(default=False)
 
@@ -42,9 +42,9 @@ class StudentEmail(BaseModel):
         return self.email
 
 class StudentTerm(BaseModel):
-    institute_fnid = models.CharField(max_length=128)
-    student_fnid = models.CharField(max_length=128)
-    term_fnid = models.CharField(max_length=128)
+    institute_fnid = models.UUIDField()
+    student_fnid = models.UUIDField()
+    term_fnid = models.UUIDField()
     current = models.BooleanField(default=True)
 
 
