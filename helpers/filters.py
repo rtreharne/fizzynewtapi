@@ -2,6 +2,7 @@ from django.db import models as dmodels
 from datetime import datetime
 import json
 from attendance.models import Session, Attendance
+from student.models import Student
 
 def json_datetime_to_python(json_dt):
     try:
@@ -25,6 +26,8 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     student_fnid = request.query_params.get("student_fnid", False)
     expired = request.query_params.get("expired", None)
     active = request.query_params.get("active", None)
+
+    
 
     print("programme_fnid", programme_fnid)
 

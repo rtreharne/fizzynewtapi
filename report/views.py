@@ -216,13 +216,14 @@ class CountActiveStudents(APIView):
             return Response({'error': 'Only one optional parmeter permitted.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get all active students
-        filters_student = helpers.filters.build_filter_from_query_string(request, Student)
+        filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True)
+        print("Student Filters: ", filters_student)
 
         if institute_fnid:
             students = [x.fnid for x in Student.objects.filter(filters_student)]
 
             # Get all attendance records associated with ongoing sessions
-            active_students_count = Student.objects.filter(filters_student).filter(active=True).count()
+            active_students_count = Student.objects.filter(filters_student).count()
 
             # Build JSON response data
             data = {
