@@ -48,7 +48,9 @@ class ListCreateStudentAPIView(ListCreateAPIView):
     @swagger_auto_schema(manual_parameters=[
         token_param_config,
         token_param_school,
-        token_param_name,
+        token_param_programme,
+        token_param_last_name,
+        token_param_first_name,
         token_param_active,
         token_param_international,
         token_param_course_instance,
