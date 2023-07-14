@@ -27,7 +27,7 @@ class CourseInstanceStudentSerializer(ModelSerializer):
 
     class Meta:
         model = CourseInstanceStudent
-        fields = ('fnid', 'institute_fnid', 'student_fnid', 'course_instance_fnid')
+        fields = ('fnid', 'institute_fnid', 'student_fnid', 'course_instance_fnid', 'average_attend_pc', 'resit')
         read_only_fields = ['fnid']
 
 

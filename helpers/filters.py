@@ -10,13 +10,11 @@ def json_datetime_to_python(json_dt):
     except:
         return json_dt
 
-def build_filter_from_query_string(request, model_class, expired_override=None, active_override=False):
+def build_filter_from_query_string(request, model_class, expired_override=None, active_override=None):
 
     fields = [f.name for f in model_class._meta.get_fields()]
-
-    print(model_class, fields)
-    print("Hello")
-    
+    print(fields)
+    print(request.query_params)
 
     institute_fnid = request.query_params.get("institute_fnid", None)
     programme_fnid = request.query_params.get("programme_fnid", None)
@@ -26,10 +24,18 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     student_fnid = request.query_params.get("student_fnid", False)
     expired = request.query_params.get("expired", None)
     active = request.query_params.get("active", None)
+    last_name = request.query_params.get("last_name", False)
+    first_name = request.query_params.get("first_name", False)
+    international = request.query_params.get("international", False)
 
-    
+    min = request.query_params.get("min", "0")
+    max = request.query_params.get("max", "100")
 
-    print("programme_fnid", programme_fnid)
+    if min == "":
+        min = "0"
+    if max == "":
+        max = "100"
+        
 
     if active_override is not None:
         if active_override:
@@ -69,8 +75,6 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
         filters &= dmodels.Q(fnid=fnid)
     if course_instance_fnid and "course_instance_fnid" in fields:
         filters &= dmodels.Q(course_instance_fnid=course_instance_fnid)
-
-    
     if student_fnid and "student_fnid" in fields:
         filters &= dmodels.Q(student_fnid=student_fnid)
     if expired is not None and "expired" in fields:
@@ -87,5 +91,17 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
         filters &= dmodels.Q(programme_fnid=programme_fnid)
     if active and "active" in fields:
         filters &= dmodels.Q(active=json.loads(active))
+
+    if model_class == Student:
+        if last_name:
+            # filter last_name by partial match, case insensitive
+            filters &= dmodels.Q(last_name__icontains=last_name)
+        if first_name:
+            filters &= dmodels.Q(first_name__icontains=first_name)
+        if international and "international" in fields:
+            filters &= dmodels.Q(international=json.loads(international))
+        
+        print("min: " + min, "max: " + max)
+        filters &= dmodels.Q(average_attend_pc__range=(int(json.loads(min)), int(json.loads(max))))
 
     return filters

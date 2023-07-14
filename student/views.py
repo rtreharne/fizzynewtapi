@@ -6,15 +6,19 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from helpers.token_params import *
+import helpers.filters
+from course.models import CourseInstanceStudent
+from attendance.models import Session, Attendance
+from datetime import datetime
+from django.utils import timezone
+from django.db import models as dmodels
 
-token_param_config=openapi.Parameter('institute_fnid', in_=openapi.IN_QUERY, description="This parameter must be included in the query string of every call.", type=openapi.TYPE_STRING)
 
 class ListCreateStudentAPIView(ListCreateAPIView):
     serializer_class = StudentSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = [DjangoFilterBackend]
-
-    filterset_fields = ["fnid", "institute_fnid", "last_name", "first_name", "school_fnid"]
 
 
     def perform_create(self, serializer):
@@ -22,14 +26,36 @@ class ListCreateStudentAPIView(ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        queryset = Student.objects.all()
+
+        filters_student = helpers.filters.build_filter_from_query_string(self.request, Student)
+
+        if self.request.query_params.get("course_instance_fnid", None):
+            course_instance_fnid = self.request.query_params.get("course_instance_fnid", None)
+            enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid)
+            student_fnids = {enrollment.student_fnid: enrollment.average_attend_pc for enrollment in enrollments}
+            filters_student &= dmodels.Q(fnid__in=list(student_fnids.keys()))
+            queryset = Student.objects.all().filter(filters_student)
+
+        else:
+            queryset = Student.objects.all().filter(filters_student)
+
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
 
-    @swagger_auto_schema(manual_parameters=[token_param_config])
+    @swagger_auto_schema(manual_parameters=[
+        token_param_config,
+        token_param_school,
+        token_param_name,
+        token_param_active,
+        token_param_international,
+        token_param_course_instance,
+        token_param_min,
+        token_param_max,
+        token_param_student_id,
+        ])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
