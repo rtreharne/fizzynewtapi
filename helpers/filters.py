@@ -10,7 +10,7 @@ def json_datetime_to_python(json_dt):
     except:
         return json_dt
 
-def build_filter_from_query_string(request, model_class, expired_override=None, active_override=None):
+def build_filter_from_query_string(request, model_class, expired_override=None, active_override=None, full_range=False):
 
     fields = [f.name for f in model_class._meta.get_fields()]
     print(fields)
@@ -29,8 +29,12 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     international = request.query_params.get("international", False)
     student_id = request.query_params.get("student_id", False)
 
-    min = request.query_params.get("min", "0")
-    max = request.query_params.get("max", "100")
+    if full_range:
+        min = "0"
+        max= "100"
+    else:
+        min = request.query_params.get("min", "0")
+        max = request.query_params.get("max", "100")
 
     if min == "":
         min = "0"

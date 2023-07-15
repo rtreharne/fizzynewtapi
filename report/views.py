@@ -143,27 +143,26 @@ class AttendanceOverview(APIView):
         programme_fnid = request.query_params.get("programme_fnid", None)
 
         # Get min value from query string
-        min_value = request.query_params.get("min", None)
+        min_value = request.query_params.get("min", 0)
 
         # Get max value if in query string
-        max_value = request.query_params.get("max", None)
+        max_value = request.query_params.get("max", 100)
 
         # Get all active students
-        filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True)
+        filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True, full_range=True)
 
-        if institute_fnid and min_value:
-            students = [x.fnid for x in Student.objects.filter(filters_student)]
 
-            # Get all attendance records associated with ongoing sessions
-            active_students_all = Student.objects.filter(fnid__in=students)
+        print(institute_fnid, min_value)
 
-            # Get all attendance records associated with ongoing sessions where students are present
-            if max_value is None:
-                new_max=101
+        if institute_fnid:
+
+            active_students_all = Student.objects.filter(filters_student)  
+
+
+            if max_value == 100 or max_value == "100":
+                active_students_band = active_students_all.filter(average_attend_pc__gte=min_value, average_attend_pc__lte=max_value)
             else:
-                new_max=max_value
-
-            active_students_band = active_students_all.filter(average_attend_pc__gte=min_value, average_attend_pc__lt=new_max)
+                active_students_band = active_students_all.filter(average_attend_pc__gte=min_value, average_attend_pc__lt=max_value)
 
             # Calculate band attendance percentage
             total_students = len(active_students_all)
