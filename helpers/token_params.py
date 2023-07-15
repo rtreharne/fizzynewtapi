@@ -20,3 +20,6 @@ token_param_active=openapi.Parameter('active', in_=openapi.IN_QUERY, description
 token_param_international=openapi.Parameter('international', in_=openapi.IN_QUERY, description="filter for international", type=openapi.TYPE_BOOLEAN)
 token_param_year=openapi.Parameter('year', in_=openapi.IN_QUERY, description="filter for year", type=openapi.TYPE_INTEGER)
 token_param_student_id=openapi.Parameter('student_id', in_=openapi.IN_QUERY, description="filter for student_id", type=openapi.TYPE_STRING)
+token_param_programme_name=openapi.Parameter('programme_name', in_=openapi.IN_QUERY, description="filter for programme_name", type=openapi.TYPE_STRING)
+token_param_term=openapi.Parameter('term_fnid', in_=openapi.IN_QUERY, description="filter for term_fnid", type=openapi.TYPE_STRING)
+token_param_code=openapi.Parameter('code', in_=openapi.IN_QUERY, description="filter for code", type=openapi.TYPE_STRING)

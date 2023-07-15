@@ -3,6 +3,8 @@ from datetime import datetime
 import json
 from attendance.models import Session, Attendance
 from student.models import Student
+from course.models import CourseInstance, Course
+from programme.models import Programme
 
 def json_datetime_to_python(json_dt):
     try:
@@ -13,8 +15,6 @@ def json_datetime_to_python(json_dt):
 def build_filter_from_query_string(request, model_class, expired_override=None, active_override=None, full_range=False):
 
     fields = [f.name for f in model_class._meta.get_fields()]
-    print(fields)
-    print(request.query_params)
 
     institute_fnid = request.query_params.get("institute_fnid", None)
     programme_fnid = request.query_params.get("programme_fnid", None)
@@ -24,10 +24,13 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     student_fnid = request.query_params.get("student_fnid", False)
     expired = request.query_params.get("expired", None)
     active = request.query_params.get("active", None)
+    name = request.query_params.get("name", False)
+    code = request.query_params.get("code", False)
     last_name = request.query_params.get("last_name", False)
     first_name = request.query_params.get("first_name", False)
     international = request.query_params.get("international", False)
     student_id = request.query_params.get("student_id", False)
+    programme_name = request.query_params.get("programme_name", False)
 
     if full_range:
         min = "0"
@@ -110,5 +113,23 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
         
         print("min: " + min, "max: " + max)
         filters &= dmodels.Q(average_attend_pc__range=(int(json.loads(min)), int(json.loads(max))))
+
+
+    if model_class == CourseInstance:
+        if name:
+            filters &= dmodels.Q(name_override__icontains=name)
+        if code:
+            filters &= dmodels.Q(name_override__icontains=code)
+
+    if model_class == Course:
+        if name:
+            filters &= dmodels.Q(name__icontains=name)
+        if code:
+            filters &= dmodels.Q(code__icontains=code)
+
+
+    if model_class == Programme:
+        if programme_name:
+            filters &= dmodels.Q(name__icontains=programme_name)
 
     return filters
