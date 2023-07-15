@@ -69,12 +69,16 @@ class ActiveSession(APIView):
         # Get all relevant students
         #filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True)
 
+        print("GOT THIS FAR")
+
         if institute_fnid:
 
-            sessions = [x.fnid for x in Session.objects.filter(filters_session)]
+            sessions = [x.fnid for x in Session.objects.filter(filters_session).filter(expired=False, cancelled=False)]
 
             # Get all attendance records associated with ongoing sessions
-            attendance_records_all = Attendance.objects.filter(session_fnid__in=sessions)
+            attendance_records_all = Attendance.objects.filter(
+                session_fnid__in=sessions,
+            )
 
             # Filter if programme specifiec
             if programme_fnid:

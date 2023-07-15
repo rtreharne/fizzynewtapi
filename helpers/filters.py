@@ -27,6 +27,7 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     last_name = request.query_params.get("last_name", False)
     first_name = request.query_params.get("first_name", False)
     international = request.query_params.get("international", False)
+    student_id = request.query_params.get("student_id", False)
 
     min = request.query_params.get("min", "0")
     max = request.query_params.get("max", "100")
@@ -100,6 +101,8 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
             filters &= dmodels.Q(first_name__icontains=first_name)
         if international and "international" in fields:
             filters &= dmodels.Q(international=json.loads(international))
+        if student_id:
+            filters &= dmodels.Q(student_id__icontains=student_id)
         
         print("min: " + min, "max: " + max)
         filters &= dmodels.Q(average_attend_pc__range=(int(json.loads(min)), int(json.loads(max))))
