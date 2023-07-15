@@ -140,24 +140,26 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        #term_filter = helpers.filters.build_filter_from_query_string(self.request, Term)
 
+        #try:
+        instance_filter = helpers.filters.build_filter_from_query_string(self.request, CourseInstance)
+        instance_queryset = CourseInstance.objects.filter(instance_filter)
+        if self.request.query_params.get("term_fnid", None):
+            term_fnid = self.request.query_params.get("term_fnid", None)
+            queryset = instance_queryset.filter(term_fnid=term_fnid)
+        else:
+            queryset = instance_queryset
+        #except:
+            #raise exceptions.ParseError("term_fnid UUID not valid.")
         
-        course_filter = helpers.filters.build_filter_from_query_string(self.request, Course)
-        print("course queryset: ", course_filter)
-        course_list = [x.fnid for x in Course.objects.filter(course_filter)]
-        queryset_from_course = CourseInstance.objects.filter(course_fnid__in=course_list)
+        
+        if self.request.query_params.get("code", None):
+            course_filter = helpers.filters.build_filter_from_query_string(self.request, Course)
+            print("course queryset: ", course_filter)
+            course_list = [x.fnid for x in Course.objects.filter(course_filter)]
+            queryset_from_course = CourseInstance.objects.filter(course_fnid__in=course_list)
+            queryset = queryset | queryset_from_course
 
-        try:
-            instance_filter = helpers.filters.build_filter_from_query_string(self.request, CourseInstance)
-            print("instance queryset: ", instance_filter)
-            instance_queryset = CourseInstance.objects.filter(instance_filter)
-        except:
-            raise exceptions.ParseError("term_fnid UUID not valid.")
-        
-        
-        #Combine the querysets
-        queryset = instance_queryset | queryset_from_course
 
         if self.request.query_params.get("programme_name", None):
             programme_filter = helpers.filters.build_filter_from_query_string(self.request, Programme)
