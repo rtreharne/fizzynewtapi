@@ -70,25 +70,30 @@ class ActiveSession(APIView):
         #filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True)
 
         if institute_fnid:
-
-            sessions = [x.fnid for x in Session.objects.filter(filters_session).filter(expired=False, cancelled=False)]
-
-            # Get all attendance records associated with ongoing sessions
-            attendance_records_all = Attendance.objects.filter(
-                session_fnid__in=sessions,
-            )
+            
+            # Get all ongoing sessions
+            sessions_list = [x.fnid for x in Session.objects.filter(filters_session).filter(expired=False, cancelled=False)]
 
             # Filter if school specific
             if school_fnid:
-                attendance_records_all = attendance_records_all.filter(school_fnid=school_fnid)
+                attendance_records_all = Attendance.objects.filter(school_fnid=school_fnid, session_fnid__in=sessions_list)
+                sessions_list = list(set([x.session_fnid for x in attendance_records_all]))
 
             # Filter if programme specific
-            if programme_fnid:
-                attendance_records_all = attendance_records_all.filter(programme_fnid=programme_fnid)
+            elif programme_fnid:
+                attendance_records_all = Attendance.objects.filter(programme_fnid=programme_fnid, session_fnid__in=sessions_list)
+                sessions_list = list(set([x.session_fnid for x in attendance_records_all]))
 
+            else:
+                # Get all attendance records associated with ongoing sessions
+                attendance_records_all = Attendance.objects.filter(
+                session_fnid__in=sessions_list,
+            )
 
             # Get all attendance records associated with ongoing sessions where students are present
             attendance_records_present = attendance_records_all.filter(present=True).count() + attendance_records_all.filter(present=False, approved_absence=True).count()
+
+            sessions = Session.objects.filter(fnid__in=sessions_list)
 
             print("Attendance present:", attendance_records_present)
 
