@@ -28,6 +28,80 @@ def get_or_false(classmodel, parameter):
     else:
         return True
 
+class ConsecutiveAbsence(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(manual_parameters=[
+        token_param_config,
+        token_param_start,
+        token_param_n,
+        token_param_school,
+        token_param_programme,
+        token_param_course_instance,
+    ])
+    def get(self, request):
+        institute_fnid = request.query_params.get("institute_fnid", None)
+        date = request.query_params.get("after", None)
+        n = request.query_params.get("n", None)
+
+        if date is None or "":
+            print("Date: ", date)
+            return Response({'error': 'After datetime (consecutive absences) must be supplied in query string.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if n is None or "" or not n.isdigit():
+            return Response({'error': 'n (consecutive absences) must be supplied as integer in query string.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        
+        school_fnid = request.query_params.get("school_fnid", None) 
+        programme_fnid = request.query_params.get("programme_fnid", None)
+        course_instance_fnid = request.query_params.get("course_instance_fnid", None)
+
+        # Get all expired sessions
+        if date:
+            sessions_filter = helpers.filters.build_filter_from_query_string(request, Session, expired_override=True)
+            sessions = Session.objects.filter(sessions_filter)
+        else:
+            # Get date 30 days ago in iso format
+            date = datetime.now() - timedelta(days=30)
+            print("DATE: ", date)
+            date = date.isoformat()
+            sessions_filter = helpers.filters.build_filter_from_query_string(request, Session, expired_override=True)
+            sessions = Session.objects.filter(sessions_filter).filter(session_start__gte=date)
+
+        if course_instance_fnid:
+            enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid)
+            student_fnids = [enrollment.student_fnid for enrollment in enrollments]
+            students = Student.objects.filter(fnid__in=student_fnids)
+        else:
+            student_filters = helpers.filters.build_filter_from_query_string(request, Student)
+            student_fnids = [x.fnid for x in Student.objects.filter(student_filters)]
+            students = Student.objects.filter(fnid__in=student_fnids)
+
+        cause_for_concern = []
+        for student in students:
+            attendance_records = Attendance.objects.filter(student_fnid=student.fnid, session_fnid__in=sessions).order_by('-created_at')
+            if len(attendance_records) > 0:
+                # Loop over attendance records and count number of consecutive present=False
+                consecutive_missed = 0
+                for attendance_record in attendance_records:
+                    if attendance_record.present == False:
+                        consecutive_missed += 1
+                    else:
+                        break
+                if consecutive_missed >= int(n):
+                    cause_for_concern_student = {
+                        "student_fnid": student.fnid,
+                        "student_id": student.student_id,
+                        "last_name": student.last_name,
+                        "first_name": student.first_name,
+                        "consecutive_absence": consecutive_missed
+                    }
+                    cause_for_concern.append(cause_for_concern_student)
+
+        data = cause_for_concern
+
+        return Response(data, status=status.HTTP_200_OK)
+    
 
 class ActiveSession(APIView):
     serializer_class = SessionRequestSerializer

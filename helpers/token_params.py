@@ -23,3 +23,4 @@ token_param_student_id=openapi.Parameter('student_id', in_=openapi.IN_QUERY, des
 token_param_programme_name=openapi.Parameter('programme_name', in_=openapi.IN_QUERY, description="filter for programme_name", type=openapi.TYPE_STRING)
 token_param_term=openapi.Parameter('term_fnid', in_=openapi.IN_QUERY, description="filter for term_fnid", type=openapi.TYPE_STRING)
 token_param_code=openapi.Parameter('code', in_=openapi.IN_QUERY, description="filter for code", type=openapi.TYPE_STRING)
+token_param_n=openapi.Parameter('n', in_=openapi.IN_QUERY, description="Number of consecutive sessions missed", type=openapi.TYPE_STRING)
