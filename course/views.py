@@ -141,6 +141,8 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
 
     def get_queryset(self):
 
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+
         code = self.request.query_params.get("code", None)
         term_fnid = self.request.query_params.get("term_fnid", None)
         programme_name = self.request.query_params.get("programme_name", None)
@@ -170,20 +172,20 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
         if self.request.query_params.get("code", None):
             course_filter = helpers.filters.build_filter_from_query_string(self.request, Course)
             course_list = [x.fnid for x in Course.objects.filter(course_filter)]
-            queryset_from_course = CourseInstance.objects.filter(course_fnid__in=course_list)
+            queryset_from_course = CourseInstance.objects.filter(institute_fnid=institute_fnid, course_fnid__in=course_list)
             queryset = queryset_from_course
 
 
         if self.request.query_params.get("programme_name", None):
-            programme_filter = helpers.filters.build_filter_from_query_string(self.request, Programme)
-            programme_list = [x.fnid for x in Programme.objects.filter(programme_filter)]
-            students = Student.objects.filter(programme_fnid__in=programme_list)
+            programme_list = [x.fnid for x in Programme.objects.filter(name__icontains=programme_name)]
+            students = Student.objects.filter(institute_fnid=institute_fnid, programme_fnid__in=programme_list)
             students_list = [x.fnid for x in students]
+            print("Students count:" , len(students))
             course_instance_list = [x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=students_list)]
-            queryset_from_programme = CourseInstance.objects.filter(fnid__in=course_instance_list)
+            queryset_from_programme = CourseInstance.objects.filter(institute_fnid=institute_fnid, fnid__in=course_instance_list)
             queryset = queryset_from_programme
 
-        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        
         if institute_fnid:
             return queryset
         else:
