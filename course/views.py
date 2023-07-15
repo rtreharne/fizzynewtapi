@@ -148,13 +148,16 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
         course_list = [x.fnid for x in Course.objects.filter(course_filter)]
         queryset_from_course = CourseInstance.objects.filter(course_fnid__in=course_list)
 
-        instance_filter = helpers.filters.build_filter_from_query_string(self.request, CourseInstance)
-        print("instance queryset: ", instance_filter)
-        instance_queryset = CourseInstance.objects.filter(instance_filter)
+        try:
+            instance_filter = helpers.filters.build_filter_from_query_string(self.request, CourseInstance)
+            print("instance queryset: ", instance_filter)
+            instance_queryset = CourseInstance.objects.filter(instance_filter)
+        except:
+            raise exceptions.ParseError("term_fnid UUID not valid.")
         
         
         #Combine the querysets
-        queryset = instance_queryset | queryset_from_course #| queryset_from_programme
+        queryset = instance_queryset | queryset_from_course
 
         if self.request.query_params.get("programme_name", None):
             programme_filter = helpers.filters.build_filter_from_query_string(self.request, Programme)
@@ -164,13 +167,6 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
             course_instance_list = [x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=students_list)]
             queryset_from_programme = CourseInstance.objects.filter(fnid__in=course_instance_list)
             queryset = queryset | queryset_from_programme
-
-        if self.request.query_params.get("term_fnid", None):
-            term_fnid=self.request.query_params.get("term_fnid", None)
-            course_list = [x.fnid for x in Course.objects.filter(term_fnid=term_fnid)]
-            queryset_from_term = CourseInstance.objects.filter(course_fnid__in=course_list)
-            queryset = queryset | queryset_from_term
-
 
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:

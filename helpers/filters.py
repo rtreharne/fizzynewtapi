@@ -31,6 +31,7 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     international = request.query_params.get("international", False)
     student_id = request.query_params.get("student_id", False)
     programme_name = request.query_params.get("programme_name", False)
+    term_fnid = request.query_params.get("term_fnid", False)
 
     if full_range:
         min = "0"
@@ -120,6 +121,8 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
             filters &= dmodels.Q(name_override__icontains=name)
         if code:
             filters &= dmodels.Q(name_override__icontains=code)
+        if term_fnid:
+            filters &= dmodels.Q(term_fnid=term_fnid)
 
     if model_class == Course:
         if name:
