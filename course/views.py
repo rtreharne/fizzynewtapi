@@ -141,6 +141,20 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
 
     def get_queryset(self):
 
+        code = self.request.query_params.get("code", None)
+        term_fnid = self.request.query_params.get("term_fnid", None)
+        programme_name = self.request.query_params.get("programme_name", None)
+        name = self.request.query_params.get("name", None)
+
+        param_list = [code, term_fnid, programme_name, name]
+
+        # Remove item from param_list if None or ""
+        param_list = [x for x in param_list if x]
+
+        print("param_list", param_list)
+        if len(param_list) > 1:
+            raise exceptions.ParseError("Only one of code, term_fnid, programme_name, name can be supplied in query string.")
+
         try:
             instance_filter = helpers.filters.build_filter_from_query_string(self.request, CourseInstance)
             instance_queryset = CourseInstance.objects.filter(instance_filter)
@@ -155,10 +169,9 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
         
         if self.request.query_params.get("code", None):
             course_filter = helpers.filters.build_filter_from_query_string(self.request, Course)
-            print("course queryset: ", course_filter)
             course_list = [x.fnid for x in Course.objects.filter(course_filter)]
             queryset_from_course = CourseInstance.objects.filter(course_fnid__in=course_list)
-            queryset = queryset | queryset_from_course
+            queryset = queryset_from_course
 
 
         if self.request.query_params.get("programme_name", None):
@@ -168,7 +181,7 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
             students_list = [x.fnid for x in students]
             course_instance_list = [x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=students_list)]
             queryset_from_programme = CourseInstance.objects.filter(fnid__in=course_instance_list)
-            queryset = queryset | queryset_from_programme
+            queryset = queryset_from_programme
 
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
