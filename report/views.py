@@ -148,29 +148,45 @@ class AttendanceOverview(APIView):
         # Get max value if in query string
         max_value = request.query_params.get("max", 100)
 
-        # Get all active students
-        filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True, full_range=True)
+        try:
+            if course_instance_fnid:
+                course_instance = CourseInstance.objects.get(fnid=course_instance_fnid)
+                enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid)
+                student_fnids = {enrollment.student_fnid: enrollment.average_attend_pc for enrollment in enrollments}
+                total_students = len(student_fnids)
 
-
-        print(institute_fnid, min_value)
-
-        if institute_fnid:
-
-            active_students_all = Student.objects.filter(filters_student)  
-
-
-            if max_value == 100 or max_value == "100":
-                active_students_band = active_students_all.filter(average_attend_pc__gte=min_value, average_attend_pc__lte=max_value)
+                if max_value == 100 or max_value == "100":
+                    students_in_band = len([x for x in student_fnids.values() if x >= float(min_value) and x <= float(max_value)])
+                else:
+                    students_in_band = len([x for x in student_fnids.values() if x >= float(min_value) and x < float(max_value)])
+                
+                if total_students != 0:
+                    band_percentage = (students_in_band / total_students) * 100
+                else:
+                    band_percentage = 0
+                    
             else:
-                active_students_band = active_students_all.filter(average_attend_pc__gte=min_value, average_attend_pc__lt=max_value)
+                
 
-            # Calculate band attendance percentage
-            total_students = len(active_students_all)
-            students_in_band = len(active_students_band)
-            if total_students != 0:
-                band_percentage = (students_in_band / total_students) * 100
-            else:
-                band_percentage = 0
+                # Get all active students
+                filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True, full_range=True)
+
+                if institute_fnid:
+
+                    active_students_all = Student.objects.filter(filters_student)  
+
+                    if max_value == 100 or max_value == "100":
+                        active_students_band = active_students_all.filter(average_attend_pc__gte=min_value, average_attend_pc__lte=max_value)
+                    else:
+                        active_students_band = active_students_all.filter(average_attend_pc__gte=min_value, average_attend_pc__lt=max_value)
+
+                    # Calculate band attendance percentage
+                    total_students = len(active_students_all)
+                    students_in_band = len(active_students_band)
+                    if total_students != 0:
+                        band_percentage = (students_in_band / total_students) * 100
+                    else:
+                        band_percentage = 0
 
             # Build JSON response data
             data = {
@@ -187,9 +203,9 @@ class AttendanceOverview(APIView):
 
             return Response(data, status=status.HTTP_200_OK)
 
-        else:
+        except:
             return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
-        
+    
 class CountActiveStudents(APIView):
     permission_classes = (IsAuthenticated,)
 
