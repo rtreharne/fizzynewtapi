@@ -141,16 +141,16 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
 
     def get_queryset(self):
 
-        #try:
-        instance_filter = helpers.filters.build_filter_from_query_string(self.request, CourseInstance)
-        instance_queryset = CourseInstance.objects.filter(instance_filter)
-        if self.request.query_params.get("term_fnid", None):
-            term_fnid = self.request.query_params.get("term_fnid", None)
-            queryset = instance_queryset.filter(term_fnid=term_fnid)
-        else:
-            queryset = instance_queryset
-        #except:
-            #raise exceptions.ParseError("term_fnid UUID not valid.")
+        try:
+            instance_filter = helpers.filters.build_filter_from_query_string(self.request, CourseInstance)
+            instance_queryset = CourseInstance.objects.filter(instance_filter)
+            if self.request.query_params.get("term_fnid", None):
+                term_fnid = self.request.query_params.get("term_fnid", None)
+                queryset = instance_queryset.filter(term_fnid=term_fnid)
+            else:
+                queryset = instance_queryset
+        except:
+            raise exceptions.ParseError("term_fnid UUID not valid.")
         
         
         if self.request.query_params.get("code", None):
