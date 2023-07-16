@@ -423,12 +423,14 @@ class SchoolCount(APIView):
 class ProgrammeCount(APIView):
     permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(manual_parameters=[token_param_config])
+    @swagger_auto_schema(manual_parameters=[token_param_config,
+                                            token_param_school])
     def get(self, request):
         institute_fnid = request.query_params.get("institute_fnid", None)
 
         if institute_fnid:
-            programmes = Programme.objects.filter(institute_fnid=institute_fnid, active=True)
+            programme_filters = helpers.filters.build_filter_from_query_string(request, Programme)
+            programmes = Programme.objects.filter(programme_filters).filter(active=True)
             programme_count = programmes.count()
 
             # Build JSON response data
