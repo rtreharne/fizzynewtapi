@@ -94,7 +94,8 @@ class ConsecutiveAbsence(APIView):
                         "student_id": student.student_id,
                         "last_name": student.last_name,
                         "first_name": student.first_name,
-                        "consecutive_absence": consecutive_missed
+                        "consecutive_absence": consecutive_missed,
+                        "average_attend_pc": student.average_attend_pc
                     }
                     cause_for_concern.append(cause_for_concern_student)
 
@@ -102,6 +103,64 @@ class ConsecutiveAbsence(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
     
+class AttendanceThreshold(APIView):
+    """
+    Returns students who have attendance below a certain threshold
+    """
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(manual_parameters=[
+        token_param_config,
+        token_param_start,
+        token_param_threshold,
+        token_param_school,
+        token_param_programme,
+        token_param_course_instance,
+    ])
+    def get(self, request):
+
+        try:
+            institute_fnid = request.query_params.get("institute_fnid", None)
+
+            if institute_fnid:
+                threshold = request.query_params.get("threshold", None)
+                
+                if threshold is None or "" or not threshold.isdigit():
+                    return Response({'error': 'Threshold value must be supplied as int in query string.'}, status=status.HTTP_400_BAD_REQUEST)
+
+                course_instance_fnid = request.query_params.get("course_instance_fnid", None)
+
+                if course_instance_fnid:
+                    enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid)
+                    student_fnids = [enrollment.student_fnid for enrollment in enrollments]
+                    students = Student.objects.filter(fnid__in=student_fnids).filter(active=True).order_by('last_name')
+                else:
+                    student_filters = helpers.filters.build_filter_from_query_string(request, Student)
+                    student_fnids = [x.fnid for x in Student.objects.filter(student_filters)]
+                    students = Student.objects.filter(fnid__in=student_fnids).filter(active=True).order_by('last_name')
+
+                cause_for_concern = []
+                for student in students:
+                    if student.average_attend_pc < float(threshold):
+                        cause_for_concern_student = {
+                            "student_fnid": student.fnid,
+                            "student_id": student.student_id,
+                            "last_name": student.last_name,
+                            "first_name": student.first_name,
+                            "average_attend_pc": student.average_attend_pc
+                        }
+                        cause_for_concern.append(cause_for_concern_student)
+                    
+                data = cause_for_concern
+
+                return Response(data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'institute_fnid not supplied'}, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
 
 class ActiveSession(APIView):
     serializer_class = SessionRequestSerializer
