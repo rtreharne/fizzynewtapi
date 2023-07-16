@@ -111,7 +111,6 @@ class AttendanceThreshold(APIView):
 
     @swagger_auto_schema(manual_parameters=[
         token_param_config,
-        token_param_start,
         token_param_threshold,
         token_param_school,
         token_param_programme,
@@ -397,6 +396,86 @@ class CountActiveStudents(APIView):
 
         else:
             return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SchoolCount(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request):
+        institute_fnid = request.query_params.get("institute_fnid", None)
+
+        if institute_fnid:
+            schools = School.objects.filter(institute_fnid=institute_fnid, active=True)
+            school_count = schools.count()
+
+            # Build JSON response data
+            data = {
+                "institute_fnid": institute_fnid,
+                "school_count": school_count
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+
+        else:
+            return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class ProgrammeCount(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request):
+        institute_fnid = request.query_params.get("institute_fnid", None)
+
+        if institute_fnid:
+            programmes = Programme.objects.filter(institute_fnid=institute_fnid, active=True)
+            programme_count = programmes.count()
+
+            # Build JSON response data
+            data = {
+                "institute_fnid": institute_fnid,
+                "programme_count": programme_count
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+
+        else:
+            return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+
+class CourseInstanceCount(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config,
+                                            token_param_school])
+    def get(self, request):
+        institute_fnid = request.query_params.get("institute_fnid", None)
+        school_fnid = request.query_params.get("school_fnid", None)
+
+        if institute_fnid:
+
+            if school_fnid:
+                # Get all students in school
+                student_filters = helpers.filters.build_filter_from_query_string(request, Student)
+                student_fnids = [x.fnid for x in Student.objects.filter(student_filters)]
+                enrollments = CourseInstanceStudent.objects.filter(student_fnid__in=student_fnids)
+                course_instance_fnids = [enrollment.course_instance_fnid for enrollment in enrollments]
+                course_instances = CourseInstance.objects.filter(fnid__in=course_instance_fnids, active=True)
+                course_instance_count = course_instances.count()
+            else:
+                course_instances = CourseInstance.objects.filter(institute_fnid=institute_fnid, active=True)
+                course_instance_count = course_instances.count()
+
+            # Build JSON response data
+            data = {
+                "institute_fnid": institute_fnid,
+                "course_instance_count": course_instance_count
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+        
+        else:
+            return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

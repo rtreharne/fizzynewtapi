@@ -47,7 +47,7 @@ class CourseInstance(BaseModel):
     end_date_override = models.DateField(null=True, blank=True)
     registration_start_override = models.DateField(null=True, blank=True)
     last_session = models.DateField(null=True, blank=True)
-
+    active = models.BooleanField(default=True)
     repeat = models.BooleanField(default=True)
     visible = models.BooleanField(default=True)
 

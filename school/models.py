@@ -6,6 +6,7 @@ class School(BaseModel):
 
     institute_fnid = models.UUIDField()
     name = models.CharField(max_length=128)
+    active = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('institute_fnid', 'name',)

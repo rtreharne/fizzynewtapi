@@ -18,7 +18,7 @@ from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from report.views import ActiveSession, AttendanceOverview, CountActiveStudents, ConsecutiveAbsence, AttendanceThreshold
+from report.views import ActiveSession, AttendanceOverview, CountActiveStudents, ConsecutiveAbsence, AttendanceThreshold, SchoolCount, CourseInstanceCount, ProgrammeCount
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -50,6 +50,9 @@ urlpatterns = [
     path('api/activestudents/', CountActiveStudents.as_view(), name="active-students"),
     path('api/consecutiveabsence/', ConsecutiveAbsence.as_view(), name="consecutive-absence"),
     path('api/attendancethreshold/', AttendanceThreshold.as_view(), name="attendance-threshold"),
+    path('api/schoolcount/', SchoolCount.as_view(), name="school-count"),
+    path('api/courseinstancecount/', CourseInstanceCount.as_view(), name="course-instance-count"),
+    path('api/programmecount/', ProgrammeCount.as_view(), name="programme-count"),
 
 
     #path('swagger(?P<format>\.json|\.yaml)', schema_view.without_ui(cache_timeout=0), name='schema-json'),
