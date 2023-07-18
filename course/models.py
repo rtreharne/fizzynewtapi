@@ -12,9 +12,6 @@ class Course(BaseModel):
     name = models.CharField(max_length=128)
     visible = models.BooleanField(default=True)
 
-
-
-
     class Meta:
         unique_together = ('institute_fnid', 'code',)
 
@@ -56,6 +53,33 @@ class CourseInstance(BaseModel):
 
     def __str__(self):
         return self.course_fnid
+    
+class Group(BaseModel):
+
+    institute_fnid = models.UUIDField()
+    course_instance_fnid = models.UUIDField()
+    name = models.CharField(max_length=128)
+
+
+    class Meta:
+        unique_together = ('course_instance_fnid', 'name')
+
+    def __str__(self):
+        return self.name
+    
+class GroupStudent(BaseModel):
+
+    institute_fnid = models.UUIDField()
+    group_fnid = models.UUIDField()
+    student_fnid = models.UUIDField()
+
+    class Meta:
+        unique_together = ('group_fnid', 'student_fnid')
+
+    def __str__(self):
+        return self.group_fnid
+
+
 
 
 

@@ -1,7 +1,7 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from course.serializers import CourseSerializer, CourseInstanceStudentSerializer, CourseInstanceSerializer
+from course.serializers import CourseSerializer, CourseInstanceStudentSerializer, CourseInstanceSerializer, GroupSerializer, GroupStudentSerializer
 from rest_framework.permissions import IsAuthenticated
-from course.models import Course, CourseInstanceStudent, CourseInstance
+from course.models import Course, CourseInstanceStudent, CourseInstance, Group, GroupStudent
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions
 from institute.models import InstituteConfig
@@ -14,9 +14,6 @@ import helpers.filters
 from programme.models import Programme
 from student.models import Student
 from institute.models import Term
-
-
-
 
 
 def get_start_date_from_week(fnid):
@@ -222,3 +219,112 @@ class CourseInstanceDetailAPIView(RetrieveUpdateDestroyAPIView):
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
+        
+class ListCreateGroupAPIView(ListCreateAPIView):
+    serializer_class = GroupSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "fnid"
+
+    filter_backends = [DjangoFilterBackend]
+
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def get_queryset(self):
+
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        course_instance_fnid = self.request.query_params.get("course_instance_fnid", None)
+        group_filter = helpers.filters.build_filter_from_query_string(self.request, Group)
+
+        if institute_fnid:
+            return Group.objects.filter(group_filter)
+        else:
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
+
+    @swagger_auto_schema(manual_parameters=[
+        token_param_config,
+        token_param_course_instance
+        ])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+    
+class GroupDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = GroupSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "fnid"
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["institute_fnid", "course_instance_fnid"]
+
+
+    def get_queryset(self):
+
+        queryset = Group.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            return queryset
+        else:
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
+        
+class ListCreateGroupStudentAPIView(ListCreateAPIView):
+    serializer_class = GroupStudentSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "fnid"
+
+    filter_backends = [DjangoFilterBackend]
+
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def get_queryset(self):
+
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+
+        if institute_fnid:
+            return GroupStudent.objects.filter(institute_fnid=institute_fnid)
+        else:
+            raise exceptions.ParseError("institute_fnid  not supplied in query string.")
+
+    @swagger_auto_schema(manual_parameters=[
+        token_param_config,
+        ])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+    
+class GroupStudentDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = GroupStudentSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "fnid"
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["institute_fnid", "group_fnid"]
+
+    def get_queryset(self):
+
+        queryset = GroupStudent.objects.all()
+        institute_fnid = self.request.query_params.get("institute_fnid", None)
+        if institute_fnid:
+            return queryset
+        else:
+            raise exceptions.ParseError("institute_fnid not supplied in query string.")
+        
+    @swagger_auto_schema(manual_parameters=[
+        token_param_config,
+        ])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+        

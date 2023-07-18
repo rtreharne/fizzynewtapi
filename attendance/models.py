@@ -28,6 +28,7 @@ class Session(BaseModel):
     session_type_fnid = models.UUIDField()
     institute_fnid = models.UUIDField()
     course_instance_fnid = models.UUIDField()
+    group_fnid = models.UUIDField(blank=True, null=True)
     session_start = models.DateTimeField()
     duration_mins = models.IntegerField(default=60)
     session_audit = models.BooleanField(default=False)
