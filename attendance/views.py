@@ -223,6 +223,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
     @swagger_auto_schema(manual_parameters=[token_param_config,
                                             token_param_fnid,
                                             token_param_school,
+                                            token_param_course_instance,
                                             token_param_programme,
                                             token_param_student,
                                             token_param_start,
