@@ -7,7 +7,6 @@ class CourseSerializer(ModelSerializer):
     def validate(self, data):
         print(data)
 
-
         # Raise error if institute doesn't exist
         try:
             institute_fnid = data["institute_fnid"]

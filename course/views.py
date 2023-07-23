@@ -202,6 +202,7 @@ class ListCreateCourseInstanceAPIView(ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
+
 class CourseInstanceDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = CourseInstanceSerializer
     permission_classes = (IsAuthenticated,)
@@ -219,7 +220,8 @@ class CourseInstanceDetailAPIView(RetrieveUpdateDestroyAPIView):
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
-        
+
+
 class ListCreateGroupAPIView(ListCreateAPIView):
     serializer_class = GroupSerializer
     permission_classes = (IsAuthenticated,)
@@ -252,7 +254,8 @@ class ListCreateGroupAPIView(ListCreateAPIView):
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-    
+
+
 class GroupDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = GroupSerializer
     permission_classes = (IsAuthenticated,)
@@ -270,7 +273,8 @@ class GroupDetailAPIView(RetrieveUpdateDestroyAPIView):
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
-        
+
+
 class ListCreateGroupStudentAPIView(ListCreateAPIView):
     serializer_class = GroupStudentSerializer
     permission_classes = (IsAuthenticated,)
@@ -300,6 +304,7 @@ class ListCreateGroupStudentAPIView(ListCreateAPIView):
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+    
     
 class GroupStudentDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = GroupStudentSerializer
