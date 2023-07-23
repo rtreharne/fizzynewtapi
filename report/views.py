@@ -356,28 +356,29 @@ class CountActiveStudents(APIView):
     def get(self, request):
         institute_fnid = request.query_params.get("institute_fnid", None)
 
-        # Get school_fnid if in query string
-        school_fnid = request.query_params.get("school_fnid", None)
-
-        # Get course_instance_fnid if in query string
-        course_instance_fnid = request.query_params.get("course_instance_fnid", None)
-
-        # Get programme_fnid if in query string
-        programme_fnid = request.query_params.get("programme_fnid", None)
-
-        construct = [course_instance_fnid, programme_fnid, school_fnid]
-
-        # Remove None values from construct
-        construct = [x for x in construct if x]
-
-        if len(construct) > 1:
-            return Response({'error': 'Only one optional parmeter permitted.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Get all active students
-        filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True)
-        print("Student Filters: ", filters_student)
-
         if institute_fnid:
+            # Get school_fnid if in query string
+            school_fnid = request.query_params.get("school_fnid", None)
+
+            # Get course_instance_fnid if in query string
+            course_instance_fnid = request.query_params.get("course_instance_fnid", None)
+
+            # Get programme_fnid if in query string
+            programme_fnid = request.query_params.get("programme_fnid", None)
+
+            construct = [course_instance_fnid, programme_fnid, school_fnid]
+
+            # Remove None values from construct
+            construct = [x for x in construct if x]
+
+            if len(construct) > 1:
+                return Response({'error': 'Only one optional parmeter permitted.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Get all active students
+            filters_student = helpers.filters.build_filter_from_query_string(request, Student, active_override=True)
+            print("Student Filters: ", filters_student)
+
+        
             students = [x.fnid for x in Student.objects.filter(filters_student)]
 
             # Get all attendance records associated with ongoing sessions
