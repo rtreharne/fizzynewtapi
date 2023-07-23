@@ -217,6 +217,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
                 return queryset
             else:
                 queryset = Session.objects.filter(filters)
+                return queryset
         else:
             return Response({'error': 'Institutue fnid not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
