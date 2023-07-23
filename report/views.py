@@ -368,7 +368,7 @@ class CountActiveStudents(APIView):
         construct = [course_instance_fnid, programme_fnid, school_fnid]
 
         # Remove None values from construct
-        construct = [x for x in construct if x != ""]
+        construct = [x for x in construct if x]
 
         if len(construct) > 1:
             return Response({'error': 'Only one optional parmeter permitted.'}, status=status.HTTP_400_BAD_REQUEST)
