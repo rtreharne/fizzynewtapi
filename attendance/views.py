@@ -178,7 +178,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
 
             course_instance_fnid = self.request.query_params.get("course_instance_fnid", None)
 
-            check = [student_fnid, school_fnid, programme_fnid, course_instance_fnid]
+            check = [student_fnid, school_fnid, programme_fnid]
 
             # remove None and "" from check
             check = [x for x in check if x]
@@ -209,17 +209,22 @@ class ListCreateSessionAPIView(ListCreateAPIView):
                 course_instances = [x.fnid for x in CourseInstance.objects.filter(fnid__in=[x.course_instance_fnid for x in enrollments])]
                 print("course instances: ", len(course_instances), course_instances)
 
-            elif course_instance_fnid:
-                course_instances = [course_instance_fnid]
 
             filters = helpers.filters.build_filter_from_query_string(self.request, Session)
 
             
             if check:
-                queryset = Session.objects.filter(filters).filter(course_instance_fnid__in=course_instances)
-                return queryset
+                if course_instance_fnid:
+                    queryset = Session.objects.filter(filters).filter(course_instance_fnid=course_instance_fnid)
+                    return queryset
+                else:
+                    queryset = Session.objects.filter(filters).filter(course_instance_fnid__in=course_instances)
             else:
-                return Session.objects.filter(filters)
+                if course_instance_fnid:
+                    queryset = Session.objects.filter(filters).filter(course_instance_fnid=course_instance_fnid)
+                    return queryset
+                else:
+                    queryset = Session.objects.filter(filters)
         else:
             return Response({'error': 'Institutue fnid not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
