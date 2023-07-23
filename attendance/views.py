@@ -178,53 +178,45 @@ class ListCreateSessionAPIView(ListCreateAPIView):
 
             course_instance_fnid = self.request.query_params.get("course_instance_fnid", None)
 
-            check = [student_fnid, school_fnid, programme_fnid]
+            check = [student_fnid, school_fnid, programme_fnid, course_instance_fnid]
 
             # remove None and "" from check
             check = [x for x in check if x]
-            print(check)
-
-            if len(check) > 1:
-                raise exceptions.ParseError("Only one of student_fnid, school_fnid, programme_fnid can be supplied in query string.")
             
             course_instances = []
+
+            if course_instance_fnid:
+                course_instances.append(course_instance_fnid)
 
             if school_fnid:
                 student_fnids = [x.fnid for x in Student.objects.filter(school_fnid=school_fnid)]
 
                 # get related course instances
-                course_instances = list(set([x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=student_fnids)]))
+                course_instances.extend(list(set([x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=student_fnids)])))
 
-            elif programme_fnid:
+            if programme_fnid:
                 student_fnids = [x.fnid for x in Student.objects.filter(programme_fnid=programme_fnid)]
                 # get course/student instances
-                course_instances = list(set([x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=student_fnids)]))
+                course_instances.extend(list(set([x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=student_fnids)])))
 
-            elif student_fnid:
+            if student_fnid:
                 student = Student.objects.get(fnid=student_fnid)
                 # get course/student instances
                 enrollments = CourseInstanceStudent.objects.filter(student_fnid=student_fnid)
 
                 # get related course instances
-                course_instances = [x.fnid for x in CourseInstance.objects.filter(fnid__in=[x.course_instance_fnid for x in enrollments])]
-                print("course instances: ", len(course_instances), course_instances)
+                course_instances.extend([x.fnid for x in CourseInstance.objects.filter(fnid__in=[x.course_instance_fnid for x in enrollments])])
 
 
             filters = helpers.filters.build_filter_from_query_string(self.request, Session)
 
             
-            if check:
-                if course_instance_fnid:
-                    queryset = Session.objects.filter(filters).filter(course_instance_fnid=course_instance_fnid)
-                    return queryset
-                else:
-                    queryset = Session.objects.filter(filters).filter(course_instance_fnid__in=course_instances)
+            if course_instances:
+                print("COURSE INSTANCES: ", course_instances)
+                queryset = Session.objects.filter(filters).filter(course_instance_fnid__in=course_instances)
+                return queryset
             else:
-                if course_instance_fnid:
-                    queryset = Session.objects.filter(filters).filter(course_instance_fnid=course_instance_fnid)
-                    return queryset
-                else:
-                    queryset = Session.objects.filter(filters)
+                queryset = Session.objects.filter(filters)
         else:
             return Response({'error': 'Institutue fnid not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
