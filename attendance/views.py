@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from attendance.models import SessionRequest, Session, Attendance
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions
-from course.models import CourseInstanceStudent
+from course.models import CourseInstanceStudent, GroupStudent
 from student.models import Student
 from drf_yasg.utils import swagger_auto_schema
 from institute.models import Institute
@@ -138,27 +138,37 @@ class ListCreateSessionAPIView(ListCreateAPIView):
     serializer_class = SessionSerializer
     permission_classes = (IsAuthenticated,)
 
-    #filter_backends = [DjangoFilterBackend]
 
     def perform_create(self, serializer):
         new_object = serializer.save()
 
-        # create records for all
-        class_list = CourseInstanceStudent.objects.filter(course_instance_fnid=new_object.course_instance_fnid)
+        group_fnid=None
+
+        if new_object.group_fnid:
+            # get all students in group
+            group_students = GroupStudent.objects.filter(group_fnid=new_object.group_fnid)
+            class_list = CourseInstanceStudent.objects.filter(course_instance_fnid=new_object.course_instance_fnid).filter(student_fnid__in=[x.student_fnid for x in group_students])
+        else:
+            # create records for all
+            class_list = CourseInstanceStudent.objects.filter(course_instance_fnid=new_object.course_instance_fnid)
+
         for student in class_list:
-            print("student: ", student.__dict__)
+            
             student_info = Student.objects.get(fnid=student.student_fnid)
+            print("student: ", student_info.__dict__)
             print("Updating attendance table")
             attendance = Attendance(
-                institute_fnid=student.institute_fnid,
+                institute_fnid=student_info.institute_fnid,
                 school_fnid=student_info.school_fnid,
                 programme_fnid = student_info.programme_fnid,
                 course_instance_fnid=student.course_instance_fnid,
                 session_fnid=new_object.fnid,
-                student_fnid=student.student_fnid,
-                session_type_fnid=new_object.session_type_fnid
+                student_fnid=student.fnid,
+                session_type_fnid=new_object.session_type_fnid,
+                group_fnid=group_fnid,
             )
             print("nearly there")
+
             try:
                 attendance.save()
             except:

@@ -290,13 +290,16 @@ class ListCreateGroupStudentAPIView(ListCreateAPIView):
 
         institute_fnid = self.request.query_params.get("institute_fnid", None)
 
+        filter = helpers.filters.build_filter_from_query_string(self.request, GroupStudent)
+
         if institute_fnid:
-            return GroupStudent.objects.filter(institute_fnid=institute_fnid)
+            return GroupStudent.objects.filter(filter)
         else:
             raise exceptions.ParseError("institute_fnid  not supplied in query string.")
 
     @swagger_auto_schema(manual_parameters=[
         token_param_config,
+        token_param_group,
         ])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

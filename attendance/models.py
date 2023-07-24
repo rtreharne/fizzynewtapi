@@ -48,6 +48,7 @@ class Session(BaseModel):
 class SessionRequest(BaseModel):
     institute_fnid = models.UUIDField()
     student_fnid = models.UUIDField()
+    group_fnid = models.UUIDField(blank=True, null=True)
     course_instance_fnid = models.UUIDField()
     session_start = models.DateTimeField()
     session_type_fnid = models.UUIDField()

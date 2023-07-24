@@ -25,3 +25,4 @@ token_param_term=openapi.Parameter('term_fnid', in_=openapi.IN_QUERY, descriptio
 token_param_code=openapi.Parameter('code', in_=openapi.IN_QUERY, description="filter for code", type=openapi.TYPE_STRING)
 token_param_n=openapi.Parameter('n', in_=openapi.IN_QUERY, description="Number of consecutive sessions missed", type=openapi.TYPE_STRING)
 token_param_threshold=openapi.Parameter('threshold', in_=openapi.IN_QUERY, description="Threshold for consecutive sessions missed", type=openapi.TYPE_INTEGER)
+token_param_group=openapi.Parameter('group_fnid', in_=openapi.IN_QUERY, description="filter for group_fnid", type=openapi.TYPE_STRING)

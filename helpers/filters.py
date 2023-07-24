@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 from attendance.models import Session, Attendance
 from student.models import Student
-from course.models import CourseInstance, Course
+from course.models import CourseInstance, Course, GroupStudent
 from programme.models import Programme
 
 def json_datetime_to_python(json_dt):
@@ -64,6 +64,7 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
     present = request.query_params.get("present", False)
     school_fnid = request.query_params.get("school_fnid", False)
     programme_fnid = request.query_params.get("programme_fnid", False)
+    group_fnid = request.query_params.get("group_fnid", False)
 
 
     if institute_fnid and "institute_fnid" in fields:
@@ -114,6 +115,10 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
         
         print("min: " + min, "max: " + max)
         filters &= dmodels.Q(average_attend_pc__range=(int(json.loads(min)), int(json.loads(max))))
+    
+    if model_class == GroupStudent:
+        if group_fnid:
+            filters &= dmodels.Q(group_fnid=group_fnid)
 
 
     if model_class == CourseInstance:
