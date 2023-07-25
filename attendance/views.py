@@ -148,6 +148,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
             # get all students in group
             group_students = GroupStudent.objects.filter(group_fnid=new_object.group_fnid)
             class_list = CourseInstanceStudent.objects.filter(course_instance_fnid=new_object.course_instance_fnid).filter(student_fnid__in=[x.student_fnid for x in group_students])
+            group_fnid = new_object.group_fnid
         else:
             # create records for all
             class_list = CourseInstanceStudent.objects.filter(course_instance_fnid=new_object.course_instance_fnid)
@@ -163,7 +164,7 @@ class ListCreateSessionAPIView(ListCreateAPIView):
                 programme_fnid = student_info.programme_fnid,
                 course_instance_fnid=student.course_instance_fnid,
                 session_fnid=new_object.fnid,
-                student_fnid=student.fnid,
+                student_fnid=student.student_fnid,
                 session_type_fnid=new_object.session_type_fnid,
                 group_fnid=group_fnid,
             )
