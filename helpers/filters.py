@@ -76,8 +76,6 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
             filters &= dmodels.Q(fnid=session_fnid)
         if before:
             filters &= dmodels.Q(session_start__lte=json_datetime_to_python(before))
-        else:
-            filters &= dmodels.Q(session_start__lte=datetime.now())
         if after:
             filters &= dmodels.Q(session_start__gte=json_datetime_to_python(after))
 
