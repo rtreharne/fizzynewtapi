@@ -112,11 +112,8 @@ class CourseStudentDetailAPIView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
 
         queryset = CourseInstanceStudent.objects.all()
-        institute_fnid = self.request.query_params.get("institute_fnid", None)
-        if institute_fnid:
-            return queryset
-        else:
-            raise exceptions.ParseError("institute_fnide not supplied in query string.")
+
+        return queryset
 
 
 class ListCreateCourseInstanceAPIView(ListCreateAPIView):
