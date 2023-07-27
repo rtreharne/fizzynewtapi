@@ -193,42 +193,49 @@ class ListCreateSessionAPIView(ListCreateAPIView):
 
             # remove None and "" from check
             check = [x for x in check if x]
-            
-            course_instances = []
 
-            if course_instance_fnid:
-                course_instances.append(course_instance_fnid)
-
-            if school_fnid:
-                student_fnids = [x.fnid for x in Student.objects.filter(school_fnid=school_fnid)]
-
-                # get related course instances
-                course_instances.extend(list(set([x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=student_fnids)])))
-
-            if programme_fnid:
-                student_fnids = [x.fnid for x in Student.objects.filter(programme_fnid=programme_fnid)]
-                # get course/student instances
-                course_instances.extend(list(set([x.course_instance_fnid for x in CourseInstanceStudent.objects.filter(student_fnid__in=student_fnids)])))
-
-            if student_fnid:
-                student = Student.objects.get(fnid=student_fnid)
-                # get course/student instances
-                enrollments = CourseInstanceStudent.objects.filter(student_fnid=student_fnid)
-
-                # get related course instances
-                course_instances.extend([x.fnid for x in CourseInstance.objects.filter(fnid__in=[x.course_instance_fnid for x in enrollments])])
 
 
             filters = helpers.filters.build_filter_from_query_string(self.request, Session)
 
+            queryset = Session.objects.filter(filters)
             
-            if course_instances:
-                print("COURSE INSTANCES: ", course_instances)
-                queryset = Session.objects.filter(filters).filter(course_instance_fnid__in=course_instances)
-                return queryset
-            else:
-                queryset = Session.objects.filter(filters)
-                return queryset
+            course_instances = []
+
+            if school_fnid:
+                # Get all attendance records for school
+                attendance_records = Attendance.objects.filter(school_fnid=school_fnid)
+
+                # Get all related session_fnids from attendance_records
+                session_fnids = [x.session_fnid for x in attendance_records]
+
+                queryset = queryset.filter(fnid__in=session_fnids)
+            
+            if programme_fnid:
+                # Get all attendance records for programme
+                attendance_records = Attendance.objects.filter(programme_fnid=programme_fnid)
+
+                # Get all related session_fnids from attendance_records
+                session_fnids = [x.session_fnid for x in attendance_records]
+                
+                queryset = queryset.filter(fnid__in=session_fnids)
+            
+            if student_fnid:
+                # Get all attendance records for student
+                attendance_records = Attendance.objects.filter(student_fnid=student_fnid)
+
+                # Get all related session_fnids from attendance_records
+                session_fnids = [x.session_fnid for x in attendance_records]
+
+                queryset = queryset.filter(fnid__in=session_fnids)
+
+            if course_instance_fnid:
+
+                queryset = queryset.filter(course_instance_fnid=course_instance_fnid)
+            
+            print("sessions: ", len(queryset))
+
+            return queryset
         else:
             return Response({'error': 'Institutue fnid not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
