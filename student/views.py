@@ -169,3 +169,19 @@ class StudentTermDetailAPIView(RetrieveUpdateDestroyAPIView):
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
