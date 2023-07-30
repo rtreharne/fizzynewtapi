@@ -36,9 +36,9 @@ class Term(BaseModel):
     institute_fnid = models.UUIDField()
     label = models.CharField(max_length=128)
     start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
     registration_start = models.DateTimeField()
-    current = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('institute_fnid', 'label')
