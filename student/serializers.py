@@ -74,5 +74,5 @@ class StudentTermSerializer(ModelSerializer):
 
     class Meta:
         model = StudentTerm
-        fields = ('fnid', 'institute_fnid', 'student_fnid', 'term_fnid', 'current')
+        fields = ('institute_fnid', 'student_fnid', 'term_fnid', 'current')
         read_only_fields = ['fnid']

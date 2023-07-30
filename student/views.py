@@ -125,26 +125,31 @@ class ListCreateStudentTermAPIView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.is_valid()
-
-        # Set primary field to False for all existing student emails if new email is primary
-        existing_terms = StudentTerm.objects.filter(student_fnid=serializer.validated_data["student_fnid"])
-        if serializer.validated_data.get("primary", False):
-
-            if len(existing_terms) > 0:
-                existing_terms.update(primary=False)
-
-        elif len(existing_terms) == 0:
-            return serializer.save(primary=True)
-
         return serializer.save()
 
     def get_queryset(self):
-        queryset = StudentTerm.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
+
         if institute_fnid:
+            filters = helpers.filters.build_filter_from_query_string(self.request, StudentTerm)
+            print("STUDENT TERM FILTER: ", filters)
+
+            queryset = StudentTerm.objects.filter(filters)
+
             return queryset
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
+    
+    @swagger_auto_schema(manual_parameters=[
+        token_param_config,
+        token_param_student,
+        ])
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
 class StudentTermDetailAPIView(RetrieveUpdateDestroyAPIView):

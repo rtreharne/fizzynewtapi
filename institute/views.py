@@ -10,10 +10,10 @@ from rest_framework import exceptions
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from helpers.token_params import *
+import helpers.filters
 
-token_param_config=openapi.Parameter('institute_fnid', in_=openapi.IN_QUERY, description="This parameter must be included in the query string of every call.", type=openapi.TYPE_STRING)
-
-
+#token_param_config=openapi.Parameter('institute_fnid', in_=openapi.IN_QUERY, description="This parameter must be included in the query string of every call.", type=openapi.TYPE_STRING)
 
 
 class ListCreateInstituteAPIView(ListCreateAPIView):
@@ -61,7 +61,6 @@ class InstituteDomainDetailAPIView(RetrieveUpdateDestroyAPIView):
         return InstituteDomain.objects.all()
 
 
-
 class InstituteDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = InstituteSerializer
     permission_classes = (IsAuthenticated,)
@@ -92,6 +91,7 @@ class InstituteConfigDetailAPIView(RetrieveUpdateDestroyAPIView):
 
         return InstituteConfig.objects.all()
 
+
 class ListCreateTermAPIView(ListCreateAPIView):
     serializer_class = TermSerializer
     permission_classes = (IsAuthenticated,)
@@ -111,7 +111,9 @@ class ListCreateTermAPIView(ListCreateAPIView):
         else:
             raise exceptions.ParseError("institute_fnid not supplied in query string.")
 
-    @swagger_auto_schema(manual_parameters=[token_param_config])
+    @swagger_auto_schema(manual_parameters=[
+        token_param_config,
+        ])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
