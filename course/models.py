@@ -37,7 +37,7 @@ class CourseInstance(BaseModel):
 
     institute_fnid = models.UUIDField()
     course_fnid = models.UUIDField()
-    term_fnid = models.UUIDField()
+    term_fnid = models.UUIDField(null=True, blank=True)
     name_override = models.CharField(max_length=128)
     threshold_override = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(100), MinValueValidator(1)])
     start_date_override = models.DateField(null=True, blank=True)
