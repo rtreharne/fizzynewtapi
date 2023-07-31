@@ -8,7 +8,7 @@ from django.utils import timezone
 class Course(BaseModel):
 
     institute_fnid = models.UUIDField()
-    code = models.CharField(max_length=9, help_text="(e.g. MATH101)")
+    code = models.CharField(max_length=20, help_text="(e.g. MATH101)")
     name = models.CharField(max_length=128)
     visible = models.BooleanField(default=True)
 
