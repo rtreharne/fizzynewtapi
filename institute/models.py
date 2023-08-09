@@ -16,6 +16,8 @@ class InstituteDomain(TrackingModel):
     institute_fnid = models.CharField(max_length=128)
     domain = models.CharField(max_length=128, validators=[URLValidator], unique=True)
     primary = models.BooleanField(default=False)
+    tenant = models.CharField(max_length=256, unique=True, blank=True, null=True)
+    admin_consent = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('institute_fnid', 'domain',)
