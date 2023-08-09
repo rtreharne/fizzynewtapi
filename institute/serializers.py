@@ -26,7 +26,7 @@ class InstituteDomainSerializer(ModelSerializer):
 
     class Meta:
         model = InstituteDomain
-        fields = ('fnid', 'institute_fnid', 'domain', 'primary')
+        fields = ('fnid', 'institute_fnid', 'domain', 'primary', 'tenant', 'admin_consent')
 
         read_only_fields = ['fnid']
 
