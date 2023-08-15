@@ -26,15 +26,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("FIZZYNEWTAPI_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+
 try:
     if sys.argv[1] == 'runserver':
 
         print('Development Server')
 
         DEBUG = True
+
+    else:
+        print("WHAT IS GOING ON?")
+        print(sys.arv[1])
 except:
-    DEBUG = False
+    DEBUG = True
     SECURE_SSL_REDIRECT = True
     DATABASES = {
         'default': {
