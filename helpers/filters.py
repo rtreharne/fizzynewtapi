@@ -1,7 +1,7 @@
 from django.db import models as dmodels
 from datetime import datetime
 import json
-from attendance.models import Session, Attendance
+from attendance.models import Session, Attendance, SessionRequest
 from student.models import Student
 from course.models import CourseInstance, Course, GroupStudent
 from programme.models import Programme
@@ -74,6 +74,12 @@ def build_filter_from_query_string(request, model_class, expired_override=None, 
 
         if session_fnid:
             filters &= dmodels.Q(fnid=session_fnid)
+        if before:
+            filters &= dmodels.Q(session_start__lte=json_datetime_to_python(before))
+        if after:
+            filters &= dmodels.Q(session_start__gte=json_datetime_to_python(after))
+
+    if model_class == SessionRequest:
         if before:
             filters &= dmodels.Q(session_start__lte=json_datetime_to_python(before))
         if after:

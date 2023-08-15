@@ -60,12 +60,6 @@ class ListCreateSessionRequestAPIView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["fnid",
-                        "institute_fnid",
-                        "student_fnid",
-                        "course_instance_fnid",
-                        "expired"
-                        ]
 
     def perform_create(self, serializer):
         new_object = serializer.save()
@@ -73,8 +67,12 @@ class ListCreateSessionRequestAPIView(ListCreateAPIView):
 
     def get_queryset(self):
 
+        before = self.request.query_params.get("before", None)
+        print("before", before)
+
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         filters = helpers.filters.build_filter_from_query_string(self.request, SessionRequest)
+        print(filters)
 
         if institute_fnid:
             queryset = SessionRequest.objects.filter(filters)
