@@ -58,7 +58,7 @@ try:
         DATABASES['default'].update(db_from_env)
         print(DATABASES)
 except:
-    DEBUG = False
+    DEBUG = True
     SECURE_SSL_REDIRECT = True
     DATABASES = {
         'default': {
