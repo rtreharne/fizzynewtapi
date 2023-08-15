@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("FIZZYNEWTAPI_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
+DEBUG = True
 try:
     if sys.argv[1] == 'runserver':
 
@@ -34,7 +34,7 @@ try:
 
         DEBUG = True
 except:
-    DEBUG = False
+    DEBUG = True
     SECURE_SSL_REDIRECT = True
     DATABASES = {
         'default': {
@@ -47,10 +47,10 @@ except:
         }
     }
 
-import dj_database_url
+    import dj_database_url
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    DATABASES['default'].update(db_from_env)
 
 ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
