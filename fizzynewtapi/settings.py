@@ -37,7 +37,23 @@ try:
 
     else:
         print("WHAT IS GOING ON?")
-        print(sys.arv[1])
+        DEBUG = True
+        SECURE_SSL_REDIRECT = True
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.environ.get('DATABASE_NAME'),
+                'USER': os.environ.get('DATABASE_USER'),
+                'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+                'HOST': os.environ.get('DATABASE_HOST'),
+                'PORT': '5432'
+            }
+        }
+
+        import dj_database_url
+
+        db_from_env = dj_database_url.config(conn_max_age=600)
+        DATABASES['default'].update(db_from_env)
 except:
     DEBUG = True
     SECURE_SSL_REDIRECT = True
@@ -51,6 +67,8 @@ except:
             'PORT': '5432'
         }
     }
+
+    print(DATABASES)
 
     import dj_database_url
 
