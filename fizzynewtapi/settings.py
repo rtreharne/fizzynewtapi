@@ -34,7 +34,7 @@ try:
 
         DEBUG = True
 except:
-    DEBUG = True
+    DEBUG = False
     SECURE_SSL_REDIRECT = True
     DATABASES = {
         'default': {
