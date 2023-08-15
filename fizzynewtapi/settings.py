@@ -34,7 +34,6 @@ try:
 
         DEBUG = True
 except:
-    print("DATABASE_NAME", os.environ.get('DATABASE_NAME'))
     DEBUG = True
     SECURE_SSL_REDIRECT = True
     DATABASES = {
@@ -49,8 +48,6 @@ except:
     }
 
     import dj_database_url
-
-    #  comment for git
 
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES['default'].update(db_from_env)
