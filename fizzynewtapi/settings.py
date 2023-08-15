@@ -37,7 +37,7 @@ try:
 
     else:
         print("WHAT IS GOING ON?")
-        DEBUG = False
+        DEBUG = True
         SECURE_SSL_REDIRECT = True
         DATABASES = {
             'default': {
