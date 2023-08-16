@@ -37,7 +37,7 @@ try:
 
     else:
         print("WHAT IS GOING ON?")
-        DEBUG = True
+        DEBUG = False
         SECURE_SSL_REDIRECT = True
         DATABASES = {
             'default': {
@@ -58,7 +58,7 @@ try:
         DATABASES['default'].update(db_from_env)
         print(DATABASES)
 except:
-    DEBUG = True
+    DEBUG = False
     SECURE_SSL_REDIRECT = True
     DATABASES = {
         'default': {
