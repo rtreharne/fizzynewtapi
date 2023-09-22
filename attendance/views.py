@@ -19,6 +19,56 @@ from helpers.token_params import *
 import helpers.filters
 from helpers.filters import json_datetime_to_python
 
+
+class UpdateAverageAttendance(APIView):
+    @swagger_auto_schema(manual_parameters=[token_param_config,
+                                            token_param_session])
+    def get(self, request):
+        institute_fnid = request.query_params.get("institute_fnid", None)
+
+        if institute_fnid:
+            session_fnid = request.query_params.get("session_fnid", None)
+
+            if session_fnid:
+
+                session = Session.objects.get(fnid=session_fnid)
+                course_instance_fnid = session.course_instance_fnid
+                course_instance = CourseInstance.objects.get(fnid=course_instance_fnid)
+                enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid)
+                students = Student.objects.filter(fnid__in=[x.student_fnid for x in enrollments])
+
+                for enrollment in enrollments:
+                    attendance = Attendance.objects.filter(student_fnid=enrollment.student_fnid).filter(
+                        course_instance_fnid=course_instance_fnid)
+                    try:
+                        enrollment.average_attend_pc = float('{0:5g}'.format(((attendance.filter(
+                            present=True).count() + attendance.filter(present=False,
+                                                                      approved_absence=True).count()) / attendance.count()) * 100))
+
+                        enrollment.save()
+                    except ZeroDivisionError:
+                        enrollment.average_attend_pc = 0
+                        enrollment.save()
+
+                for student in students:
+                    attendance = Attendance.objects.filter(student_fnid=student.fnid).filter(
+                        course_instance_fnid=course_instance_fnid)
+                    try:
+                        student.average_attend_pc = float('{0:5g}'.format(((attendance.filter(
+                            present=True).count() + attendance.filter(present=False,
+                                                                      approved_absence=True).count()) / attendance.count()) * 100))
+                        student.save()
+                    except ZeroDivisionError:
+                        student.average_attend = 0
+                        student.save()
+
+                return Response({'success': 'Average attendances updated'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Session fnid not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            return Response({'error': 'Could not find institute'}, status=status.HTTP_400_BAD_REQUEST)
+
 class AverageAttendance(APIView):
 
     @swagger_auto_schema(manual_parameters=[token_param_config,
@@ -154,8 +204,6 @@ class ListCreateSessionAPIView(ListCreateAPIView):
         for student in class_list:
             
             student_info = Student.objects.get(fnid=student.student_fnid)
-            print("student: ", student_info.__dict__)
-            print("Updating attendance table")
             attendance = Attendance(
                 institute_fnid=student_info.institute_fnid,
                 school_fnid=student_info.school_fnid,
@@ -166,7 +214,6 @@ class ListCreateSessionAPIView(ListCreateAPIView):
                 session_type_fnid=new_object.session_type_fnid,
                 group_fnid=group_fnid,
             )
-            print("nearly there")
 
             try:
                 attendance.save()

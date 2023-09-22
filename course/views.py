@@ -85,13 +85,16 @@ class ListCreateCourseInstanceStudentAPIView(ListCreateAPIView):
         queryset = CourseInstanceStudent.objects.all()
         institute_fnid = self.request.query_params.get("institute_fnid", None)
         if institute_fnid:
-            return queryset
+            course_instance_student_filter = helpers.filters.build_filter_from_query_string(self.request, CourseInstanceStudent)
+            return queryset.filter(course_instance_student_filter)
         else:
             raise exceptions.ParseError("institute_id not supplied in query string.")
 
     @swagger_auto_schema(manual_parameters=[
         token_param_config,
-        ])
+        token_param_course_instance,
+        token_param_student
+    ])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
