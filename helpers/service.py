@@ -1,5 +1,5 @@
 from django.utils import timezone
-from attendance.models import AttendanceRecord, Session
+from attendance.models import Attendance, Session
 
 def calculate_attendance(queryset):
     """
