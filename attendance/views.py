@@ -39,8 +39,10 @@ class UpdateAverageAttendance(APIView):
             session_fnid = request.query_params.get("session_fnid", None)
 
             if session_fnid:
-
-                session = Session.objects.get(fnid=session_fnid, institute_fnid=institute_fnid)
+                try:
+                    session = Session.objects.get(fnid=session_fnid, institute_fnid=institute_fnid)
+                except:
+                    return Response({'error': 'Could not find session'}, status=status.HTTP_400_BAD_REQUEST)
                 course_instance_fnid = session.course_instance_fnid
                 course_instance = CourseInstance.objects.get(fnid=course_instance_fnid)
                 enrollments_filter = helpers.filters.build_filter_from_query_string(request, CourseInstanceStudent)
