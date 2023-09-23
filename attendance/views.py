@@ -98,7 +98,7 @@ class AverageAttendance(APIView):
         print("Filters Attendance:", filters_attendance)
 
         if institute_fnid:
-            sessions = [session.fnid for session in Session.objects.filter(cancelled=False, void=False, session_start__lte=timezone.now())]
+            sessions = [session.fnid for session in Session.objects.filter(filters_session).filter(cancelled=False, void=False)]
 
             queryset = Attendance.objects.filter(filters_attendance).filter(session_fnid__in=sessions)
 
