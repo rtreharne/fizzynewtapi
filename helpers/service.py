@@ -1,4 +1,5 @@
 from django.utils import timezone
+from attendance.models import AttendanceRecord, Session
 
 def calculate_attendance(queryset):
     """
@@ -12,11 +13,13 @@ def calculate_attendance(queryset):
       + are in the future 
       + do not have approved absence
     """
+    # Need to filter out sessions that have been cancelled, voided, or are in the future
+    session_fnids = [session.fnid for session in Session.objects.filter(cancelled=False, void=False, date__lte=timezone.now())]
+    queryset = queryset.filter(session_fnid__in=session_fnids, approved_absence=False)
+
     try:
         present = queryset.filter(present=True).count()
-        approved_absence = queryset.filter(approved_absence=True).count()
-        voided = queryset.filter(void=True).count()
-        total = queryset.count() - voided - approved_absence
+        total = queryset.count()
 
         average_attendance = float('{0:5g}'.format(present / total * 100))
     except ZeroDivisionError:
