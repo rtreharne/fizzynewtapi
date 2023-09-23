@@ -14,7 +14,7 @@ def calculate_attendance(queryset):
       + do not have approved absence
     """
     # Need to filter out sessions that have been cancelled, voided, or are in the future
-    session_fnids = [session.fnid for session in Session.objects.filter(cancelled=False, void=False, date__lte=timezone.now())]
+    session_fnids = [session.fnid for session in Session.objects.filter(cancelled=False, void=False, session_start__lte=timezone.now())]
     queryset = queryset.filter(session_fnid__in=session_fnids, approved_absence=False)
 
     try:
