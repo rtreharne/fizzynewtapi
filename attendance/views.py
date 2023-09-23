@@ -18,6 +18,7 @@ from drf_yasg import openapi
 from helpers.token_params import *
 import helpers.filters
 from helpers.filters import json_datetime_to_python
+import helpers.service
 
 
 class UpdateAverageAttendance(APIView):
@@ -26,12 +27,19 @@ class UpdateAverageAttendance(APIView):
     def get(self, request):
         institute_fnid = request.query_params.get("institute_fnid", None)
 
+
         if institute_fnid:
+            # if institute_fnid doesn't exist, return error
+            try:
+                institute = Institute.objects.get(fnid=institute_fnid)
+            except:
+                return Response({'error': 'Could not find institute'}, status=status.HTTP_400_BAD_REQUEST)
+            
             session_fnid = request.query_params.get("session_fnid", None)
 
             if session_fnid:
 
-                session = Session.objects.get(fnid=session_fnid)
+                session = Session.objects.get(fnid=session_fnid, institute_fnid=institute_fnid)
                 course_instance_fnid = session.course_instance_fnid
                 course_instance = CourseInstance.objects.get(fnid=course_instance_fnid)
                 enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid)
@@ -40,29 +48,17 @@ class UpdateAverageAttendance(APIView):
                 for enrollment in enrollments:
                     attendance = Attendance.objects.filter(student_fnid=enrollment.student_fnid).filter(
                         course_instance_fnid=course_instance_fnid)
-                    try:
-                        enrollment.average_attend_pc = float('{0:5g}'.format(((attendance.filter(
-                            present=True).count() + attendance.filter(present=False,
-                                                                      approved_absence=True).count()) / attendance.count()) * 100))
-
-                        enrollment.save()
-                    except ZeroDivisionError:
-                        enrollment.average_attend_pc = 0
-                        enrollment.save()
+    
+                    enrollment.average_attend_pc = helpers.service.calculate_attendance(attendance)
+                    enrollment.save()
+        
 
                 for student in students:
-                    attendance = Attendance.objects.filter(student_fnid=student.fnid).filter(
-                        course_instance_fnid=course_instance_fnid)
-                    try:
-                        student.average_attend_pc = float('{0:5g}'.format(((attendance.filter(
-                            present=True).count() + attendance.filter(present=False,
-                                                                      approved_absence=True).count()) / attendance.count()) * 100))
-                        student.save()
-                    except ZeroDivisionError:
-                        student.average_attend = 0
-                        student.save()
+                    attendance = Attendance.objects.filter(student_fnid=student.fnid)
+                    student.average_attend_pc = helpers.service.calculate_attendance(attendance)
+                    student.save()
 
-                return Response({'success': 'Average attendances updated'}, status=status.HTTP_200_OK)
+                return Response({'success': True, 'message': 'Average attendance updated.'}, status=status.HTTP_200_OK)
             else:
                 return Response({'error': 'Session fnid not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -94,10 +90,7 @@ class AverageAttendance(APIView):
             print("sessions", len(sessions))
             queryset = Attendance.objects.filter(filters_attendance).filter(session_fnid__in=sessions)
 
-            try:
-                average_attendance = float('{0:5g}'.format(((queryset.filter(present=True).count()+queryset.filter(present=False, approved_absence=True).count())/queryset.count())*100))
-            except ZeroDivisionError:
-                average_attendance = 0
+            average_attendance = helpers.service.calculate_attendance(queryset)
 
             return Response({'average_attendance': average_attendance}, status=status.HTTP_200_OK)
 
