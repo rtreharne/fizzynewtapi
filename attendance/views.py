@@ -37,12 +37,20 @@ class UpdateAverageAttendance(APIView):
                 return Response({'error': 'Could not find institute'}, status=status.HTTP_400_BAD_REQUEST)
             
             session_fnid = request.query_params.get("session_fnid", None)
+            student_fnid = request.query_params.get("student_fnid", None)
+
+            if student_fnid:
+                try:
+                    student = Student.objects.get(fnid=student_fnid)
+                except:
+                    return Response({'error': 'Could not find student'}, status=status.HTTP_400_BAD_REQUEST)
 
             if session_fnid:
                 try:
                     session = Session.objects.get(fnid=session_fnid, institute_fnid=institute_fnid)
                 except:
                     return Response({'error': 'Could not find session'}, status=status.HTTP_400_BAD_REQUEST)
+                
                 course_instance_fnid = session.course_instance_fnid
                 course_instance = CourseInstance.objects.get(fnid=course_instance_fnid)
                 enrollments_filter = helpers.filters.build_filter_from_query_string(request, CourseInstanceStudent)
@@ -62,7 +70,6 @@ class UpdateAverageAttendance(APIView):
                 for student in students:
                     attendance = Attendance.objects.filter(student_fnid=student.fnid)
                     student.average_attend_pc = helpers.service.calculate_attendance(attendance)
-                    print("average_attend_pc_course_instance", enrollment.average_attend_pc)
                     student.save()
 
                 return Response({'success': True, 'message': 'Average attendance updated.'}, status=status.HTTP_200_OK)
