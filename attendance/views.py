@@ -19,6 +19,7 @@ from helpers.token_params import *
 import helpers.filters
 from helpers.filters import json_datetime_to_python
 import helpers.service
+from django.utils import timezone
 
 
 class UpdateAverageAttendance(APIView):
@@ -56,19 +57,17 @@ class UpdateAverageAttendance(APIView):
                 print("enrollments_filter", enrollments_filter)
                 enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid).filter(enrollments_filter)
                 students = Student.objects.filter(fnid__in=[x.student_fnid for x in enrollments])
+                session_fnids = [session.fnid for session in Session.objects.filter(cancelled=False, void=False, session_start__lte=timezone.now())]
+                attendance = Attendance.objects.filter(session_fnid__in=session_fnids)
+                
 
-                for enrollment in enrollments:
-                    attendance = Attendance.objects.filter(student_fnid=enrollment.student_fnid).filter(
-                        course_instance_fnid=course_instance_fnid)
-    
-                    enrollment.average_attend_pc = helpers.service.calculate_attendance(attendance)
-                    print("average_attend_pc_course_instance", enrollment.average_attend_pc)
+                for enrollment in enrollments:    
+                    enrollment.average_attend_pc = helpers.service.calculate_attendance(attendance.filter(student_fnid=enrollment.student_fnid, course_instance_fnid=course_instance_fnid))
                     enrollment.save()
         
 
                 for student in students:
-                    attendance = Attendance.objects.filter(student_fnid=student.fnid)
-                    student.average_attend_pc = helpers.service.calculate_attendance(attendance)
+                    student.average_attend_pc = helpers.service.calculate_attendance(attendance.filter(student_fnid=student.fnid))
                     student.save()
 
                 return Response({'success': True, 'message': 'Average attendance updated.'}, status=status.HTTP_200_OK)
@@ -99,8 +98,8 @@ class AverageAttendance(APIView):
         print("Filters Attendance:", filters_attendance)
 
         if institute_fnid:
-            sessions = [x.fnid for x in Session.objects.filter(filters_session) if x.cancelled == False]
-            print("sessions", len(sessions))
+            sessions = [session.fnid for session in Session.objects.filter(cancelled=False, void=False, session_start__lte=timezone.now())]
+
             queryset = Attendance.objects.filter(filters_attendance).filter(session_fnid__in=sessions)
 
             average_attendance = helpers.service.calculate_attendance(queryset)
