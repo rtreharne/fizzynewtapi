@@ -23,7 +23,8 @@ import helpers.service
 
 class UpdateAverageAttendance(APIView):
     @swagger_auto_schema(manual_parameters=[token_param_config,
-                                            token_param_session])
+                                            token_param_session,
+                                            token_param_student,])
     def get(self, request):
         institute_fnid = request.query_params.get("institute_fnid", None)
 
@@ -42,7 +43,9 @@ class UpdateAverageAttendance(APIView):
                 session = Session.objects.get(fnid=session_fnid, institute_fnid=institute_fnid)
                 course_instance_fnid = session.course_instance_fnid
                 course_instance = CourseInstance.objects.get(fnid=course_instance_fnid)
-                enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid)
+                enrollments_filter = helpers.filters.build_filter_from_query_string(request, CourseInstanceStudent)
+                print("enrollments_filter", enrollments_filter)
+                enrollments = CourseInstanceStudent.objects.filter(enrollments_filter)
                 students = Student.objects.filter(fnid__in=[x.student_fnid for x in enrollments])
 
                 for enrollment in enrollments:
@@ -50,12 +53,14 @@ class UpdateAverageAttendance(APIView):
                         course_instance_fnid=course_instance_fnid)
     
                     enrollment.average_attend_pc = helpers.service.calculate_attendance(attendance)
+                    print("average_attend_pc_course_instance", enrollment.average_attend_pc)
                     enrollment.save()
         
 
                 for student in students:
                     attendance = Attendance.objects.filter(student_fnid=student.fnid)
                     student.average_attend_pc = helpers.service.calculate_attendance(attendance)
+                    print("average_attend_pc_course_instance", enrollment.average_attend_pc)
                     student.save()
 
                 return Response({'success': True, 'message': 'Average attendance updated.'}, status=status.HTTP_200_OK)
