@@ -57,7 +57,7 @@ class UpdateAverageAttendance(APIView):
                 print("enrollments_filter", enrollments_filter)
                 enrollments = CourseInstanceStudent.objects.filter(course_instance_fnid=course_instance_fnid).filter(enrollments_filter)
                 students = Student.objects.filter(fnid__in=[x.student_fnid for x in enrollments])
-                session_fnids = [session.fnid for session in Session.objects.filter(cancelled=False, void=False, session_start__lte=timezone.now())]
+                session_fnids = [session.fnid for session in Session.objects.filter(cancelled=False, void=False)]
                 attendance = Attendance.objects.filter(session_fnid__in=session_fnids)
                 
 
